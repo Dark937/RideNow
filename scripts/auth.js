@@ -431,10 +431,37 @@ async function initTopbarDropdown() {
   const dropdown    = document.getElementById("profileDropdown");
   if (!profileBtn || !dropdown) return;
 
-  const user = await Session.get();
+  const setOpen = (isOpen) => {
+    dropdown.classList.toggle("is-open", isOpen);
+    profileBtn.setAttribute("aria-expanded", String(isOpen));
+  };
+
+  const closeDropdown = () => setOpen(false);
+
+  // Bind interactions before async auth lookup so menu can always open.
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setOpen(!dropdown.classList.contains("is-open"));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (profileWrap && !profileWrap.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeDropdown();
+  });
+
+  let user = null;
+  try {
+    user = await Session.get();
+  } catch (e) {
+    console.warn("Unable to read user session, loading guest menu.", e);
+  }
 
   if (user) {
-    /* ── Logged-in state ── */
     const circle = profileBtn.querySelector(".circle");
     if (circle) {
       circle.classList.add("is-logged-in");
@@ -447,19 +474,16 @@ async function initTopbarDropdown() {
     if (ddName)  ddName.textContent  = `${user.firstName} ${user.lastName}`.trim();
     if (ddEmail) ddEmail.textContent = user.email || "";
 
-    // Show logged-in menu, hide guest menu
     dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "none");
     dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "");
 
-    // Sign out
     dropdown.querySelector(".dd-signout")?.addEventListener("click", () => {
       Session.clear();
-      dropdown.classList.remove("is-open");
+      closeDropdown();
       window.location.reload();
     });
 
   } else {
-    /* ── Guest state ── */
     dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "none");
     dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "");
 
@@ -470,24 +494,6 @@ async function initTopbarDropdown() {
       window.location.href = "register.html";
     });
   }
-
-  /* ── Toggle open/close ── */
-  profileBtn.addEventListener("click", e => {
-    e.stopPropagation();
-    dropdown.classList.toggle("is-open");
-  });
-
-  // Close on outside click
-  document.addEventListener("click", e => {
-    if (profileWrap && !profileWrap.contains(e.target)) {
-      dropdown.classList.remove("is-open");
-    }
-  });
-
-  // Close on Escape
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") dropdown.classList.remove("is-open");
-  });
 }
 
 /* ── GOOGLE SIGN-IN STUB ──────────────────────────────────────────── */
