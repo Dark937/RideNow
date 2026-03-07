@@ -15,6 +15,7 @@
   --muted-2: rgba(255, 255, 255, 0.58);
   --glow-a: rgba(232, 70, 255, 0.18);
   --glow-b: rgba(63, 113, 255, 0.18);
+  --features-sticky-top: clamp(96px, 14vh, 160px);
 }
 
 html {
@@ -67,6 +68,47 @@ button {
     radial-gradient(circle at 20% 80%, rgba(0, 102, 255, 0.08), transparent 28%),
     transparent;
   overflow: hidden;
+}
+
+.partners-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(24px, 8vh, 70px);
+  z-index: 16;
+  pointer-events: none;
+}
+
+.partners-inner {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: partnersMarquee 26s linear infinite;
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: clamp(26px, 3.5vw, 54px);
+  padding-right: clamp(26px, 3.5vw, 54px);
+}
+
+.partner-logo {
+  flex: 0 0 auto;
+  width: auto;
+  height: clamp(20px, 2.2vw, 28px);
+  max-width: none;
+  opacity: 0.82;
+}
+
+@keyframes partnersMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
 }
 
 
@@ -1028,14 +1070,19 @@ spline-viewer {
 }
 
 .features-left-inner {
+  position: sticky;
+  top: var(--features-sticky-top);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   max-width: 520px;
   padding-right: 40px;
   will-change: opacity;
-  pointer-events: none;
-  /* JS sets position:fixed + top/left/width directly */
+  pointer-events: auto;
+}
+
+.features-image-fixed {
+  display: none;
 }
 
 .features-right {
@@ -1554,15 +1601,11 @@ spline-viewer {
 }
 
   .features-left-inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  max-width: 520px;
-  padding-right: 40px;
-  will-change: opacity;
-  pointer-events: none;
-  /* JS sets position:fixed + top/left/width directly */
-}
+    position: static;
+    top: auto;
+    max-width: none;
+    padding-right: 0;
+  }
 
   .features-right {
     gap: 56px;
