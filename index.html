@@ -1,12 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RideNow</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ride</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
-<spline-viewer url="https://prod.spline.design/ajOab4UIBzBbpqlz/scene.splinecode"></spline-viewer>
+  <div class="site-wrap">
+  <!-- ═══════════════════════════════════════════════════════════════
+       iOS 26 Liquid Glass SVG filters
+       feDisplacementMap uses a radial/edge displacement map encoded
+       as SVG data-URI. R=X axis, G=Y axis. 128 = neutral (no shift).
+       Edge regions push outward (refraction), center is neutral.
+       ═══════════════════════════════════════════════════════════════ -->
+  <svg width="0" height="0" style="position:absolute;pointer-events:none;overflow:hidden" aria-hidden="true">
+    <defs>
+
+      <!-- ── CARD glass filter ── rounded-rect edge refraction ───────── -->
+      <filter id="lg-card-filter" x="-8%" y="-8%" width="116%" height="116%"
+              color-interpolation-filters="sRGB">
+        <!-- Displacement map: radial gradient from edges inward
+             outer rim: R>128 (push right/down), center: R=128 (neutral)
+             creates lens-like edge bending  -->
+        <feImage result="cardMap" preserveAspectRatio="none"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3CdDefs%3E%3CradialGradient id='rg' cx='50%25' cy='50%25' r='55%25'%3E%3Cstop offset='0%25' stop-color='%23808080'/%3E%3Cstop offset='70%25' stop-color='%23808080'/%3E%3Cstop offset='88%25' stop-color='%23c86464'/%3E%3Cstop offset='100%25' stop-color='%23808080'/%3E%3C/radialGradient%3E%3C/dDefs%3E%3Crect width='100%25' height='100%25' fill='url(%23rg)'/%3E%3C/svg%3E"/>
+        <feDisplacementMap in="SourceGraphic" in2="cardMap"
+          scale="18" xChannelSelector="R" yChannelSelector="G"
+          result="displaced"/>
+        <!-- Slight chromatic aberration — R channel shifts a hair more -->
+        <feComponentTransfer in="displaced">
+          <feFuncR type="linear" slope="1.006" intercept="-0.003"/>
+          <feFuncB type="linear" slope="0.994" intercept="0.003"/>
+        </feComponentTransfer>
+      </filter>
+
+      <!-- ── BUTTON glass filter ── pill/capsule lens effect ──────────── -->
+      <filter id="lg-btn-filter" x="-20%" y="-30%" width="140%" height="160%"
+              color-interpolation-filters="sRGB">
+        <!-- Elliptical displacement: edges of pill push outward -->
+        <feImage result="btnMap" preserveAspectRatio="none"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='120'%3E%3CdDefs%3E%3CradialGradient id='pg' cx='50%25' cy='50%25' rx='55%25' ry='50%25'%3E%3Cstop offset='0%25' stop-color='%23808080'/%3E%3Cstop offset='65%25' stop-color='%23808080'/%3E%3Cstop offset='85%25' stop-color='%23b06868'/%3E%3Cstop offset='100%25' stop-color='%23808080'/%3E%3C/radialGradient%3E%3C/dDefs%3E%3Crect width='100%25' height='100%25' fill='url(%23pg)'/%3E%3C/svg%3E"/>
+        <feDisplacementMap in="SourceGraphic" in2="btnMap"
+          scale="12" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+
+      <!-- ── TOPBAR glass filter ── wide horizontal bar subtle warp ───── -->
+      <filter id="lg-bar-filter" x="-2%" y="-50%" width="104%" height="200%"
+              color-interpolation-filters="sRGB">
+        <!-- Horizontal bar: top and bottom edges refract, middle neutral -->
+        <feImage result="barMap" preserveAspectRatio="none"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80'%3E%3CdDefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23909090'/%3E%3Cstop offset='20%25' stop-color='%23808080'/%3E%3Cstop offset='80%25' stop-color='%23808080'/%3E%3Cstop offset='100%25' stop-color='%23707070'/%3E%3C/linearGradient%3E%3C/dDefs%3E%3Crect width='100%25' height='100%25' fill='url(%23bg)'/%3E%3C/svg%3E"/>
+        <feDisplacementMap in="SourceGraphic" in2="barMap"
+          scale="6" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+
+    </defs>
+  </svg>
+
+  <div class="topbar">
+    <button class="menu-btn" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 12H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 18H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Ride logo" class="logo-img">
+    </div>
+
+    <button class="profile-btn" aria-label="Profile">
+      <span class="circle"></span>
+    </button>
+  </div>
+
+  <section class="hero">
+    <div class="content">
+      <div class="content-inner">
+        <h1 class="title">Move Faster. Ride Smarter</h1>
+        <h2 class="subtitle">Powered By AI</h2>
+
+        <p class="desc">
+          From quick city rides to daily commuting, RideNow delivers a smooth
+          and reliable experience powered by modern technology and intuitive
+          design.
+        </p>
+
+        <div class="actions">
+          <a href="#" class="btn btn-primary"><span>Get started</span></a>
+          <a href="#" class="btn btn-secondary"><span>View plans</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="spline-bg">
+      <spline-viewer url="https://prod.spline.design/7z2zA4Orndznthua/scene.splinecode"></spline-viewer>
+    </div>
+
+    <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+      <div class="nav-overlay-inner">
+        <button class="nav-close-btn" id="navClose" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 5L19 19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M19 5L5 19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <nav class="nav-links">
+          <a href="#" class="nav-link nav-active">Home</a>
+          <a href="#features-parallax" class="nav-link">Features</a>
+          <a href="#vehicles" class="nav-link">Vehicles</a>
+          <a href="#fidelity" class="nav-link">Fidelity</a>
+          <a href="#become-driver" class="nav-link">Drive with us</a>
+        </nav>
+
+        <div class="nav-footer">
+          <div class="nav-socials">
+            <a href="#" class="nav-social-link">Instagram</a>
+            <a href="#" class="nav-social-link">X</a>
+            <a href="#" class="nav-social-link">LinkedIn</a>
+          </div>
+          <span class="nav-brand-tag">Ride © 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-fade"></div>
+  </section>
+
+  <main class="ride-main">
+<section class="section section-parallax-features bg-1" id="features-parallax">
+  <div class="parallax-bg-layer"></div>
+  <div class="parallax-orb orb-1"></div>
+  <div class="parallax-orb orb-2"></div>
+  <div class="parallax-orb orb-3"></div>
+
+  <div class="container">
+    <div class="features-layout">
+      <aside class="features-left">
+        <div class="features-left-inner">
+          <span class="section-kicker">Core Features</span>
+          <h2 class="section-title parallax-title" id="featureTitle">
+            AI routes that think before traffic does.
+          </h2>
+          <p class="section-text parallax-text" id="featureText">
+            Ride uses live traffic, demand patterns, and predictive intelligence
+            to optimize each route before delays become a problem.
+          </p>
+
+          <div class="feature-progress">
+            <span class="progress-dot active"></span>
+            <span class="progress-dot"></span>
+            <span class="progress-dot"></span>
+            <span class="progress-dot"></span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="features-right">
+        <article class="feature-panel active"
+          data-title="AI routes that think before traffic does."
+          data-text="Ride uses live traffic, demand patterns, and predictive intelligence to optimize each route before delays become a problem."
+          data-bg="bg-1">
+          <div class="feature-panel-media">
+            <img src="images/feature-route.jpg" alt="AI route optimization" loading="lazy">
+            <div class="feature-panel-overlay"></div>
+          </div>
+        </article>
+
+        <article class="feature-panel"
+          data-title="Cleaner mobility with less wasted movement."
+          data-text="AI minimizes useless mileage, reduces empty trips, and builds a more efficient urban transport model with lower environmental impact."
+          data-bg="bg-2">
+          <div class="feature-panel-media">
+            <img src="images/feature-eco.jpg" alt="Environmental impact optimization" loading="lazy">
+            <div class="feature-panel-overlay"></div>
+          </div>
+        </article>
+
+        <article class="feature-panel"
+          data-title="Customer assistance that feels immediate and intelligent."
+          data-text="Ride supports users before, during, and after the trip with AI-powered guidance, assistance, and personalized updates."
+          data-bg="bg-3">
+          <div class="feature-panel-media">
+            <img src="images/feature-support.jpg" alt="AI customer support" loading="lazy">
+            <div class="feature-panel-overlay"></div>
+          </div>
+        </article>
+
+        <article class="feature-panel"
+          data-title="Supercars turn every ride into a statement."
+          data-text="Ride is not built around generic fleet vehicles. Supercars and high-performance design are part of the brand, the experience, and the identity."
+          data-bg="bg-4">
+          <div class="feature-panel-media">
+            <img src="images/feature-supercar.jpg" alt="Ride supercar experience" loading="lazy">
+            <div class="feature-panel-overlay"></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <section class="section section-process reveal" data-theme="blue" id="how-it-works">
+      <div class="container">
+        <div class="section-center">
+          <span class="section-kicker">How It Works</span>
+          <h2 class="section-title centered">
+Every ride, engineered before it begins.
+          </h2>
+          <p class="section-text centered narrow">
+Book, and let the system take care of everything else.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <article class="glass-card step-card reveal scroll-slide-right">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            </div>
+            <h3>Choose your class</h3>
+            <p>
+Pick your vehicle class. The system locks in your preferences and handles the rest.
+            </p>
+          </article>
+
+          <article class="glass-card step-card reveal scroll-fade-up">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5v1a5 5 0 0 1-5 5 5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z"/><path d="M2 20c0-4 4-7 10-7s10 3 10 7"/><path d="M17 8h2a2 2 0 0 1 0 4h-2"/><path d="M7 8H5a2 2 0 0 0 0 4h2"/></svg>
+            </div>
+            <h3>AI prepares the trip</h3>
+            <p>
+Before the car arrives, AI has already solved the route, the timing, and the conditions.
+            </p>
+          </article>
+
+          <article class="glass-card step-card reveal scroll-slide-left">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24"><path d="M5 3v18"/><path d="M5 3h14l-3 5 3 5H5"/></svg>
+            </div>
+            <h3>Ride at a different level</h3>
+            <p>
+Your driver arrives on time, in the right car, on the optimized path. No friction.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-vehicles reveal" data-theme="mix" id="vehicles">
+      <div class="container">
+        <div class="section-top split vehicles-head">
+          <div>
+            <span class="section-kicker">Our Vehicles</span>
+            <h2 class="section-title">
+              Supercars are not a side feature. They are part of the identity.
+            </h2>
+          </div>
+          <p class="section-text">
+            Ride is built around high-performance design, premium comfort,
+            and unforgettable presence. This is not generic ride-hailing dressed
+            in black. This is mobility with actual character.
+          </p>
+        </div>
+
+        <div class="vehicle-grid">
+          <article class="vehicle-card glass-card reveal scroll-zoom">
+            <div class="vehicle-image">
+              <img src="images/economy.jpg" alt="Urban Sport vehicle" loading="lazy">
+            </div>
+            <div class="vehicle-content">
+              <h3>Porsche 718</h3>
+              <p>Precision handling. City-ready performance.</p>
+            </div>
+          </article>
+
+          <article class="vehicle-card glass-card reveal scroll-zoom">
+            <div class="vehicle-image">
+              <img src="images/business.jpg" alt="Executive Class vehicle" loading="lazy">
+            </div>
+            <div class="vehicle-content">
+              <h3>Mercedes S-Class</h3>
+              <p>Flagship comfort for business and first-class travel.</p>
+            </div>
+          </article>
+
+          <article class="vehicle-card glass-card reveal scroll-zoom">
+            <div class="vehicle-image">
+              <img src="images/premium.jpg" alt="Grand Luxury vehicle" loading="lazy">
+            </div>
+            <div class="vehicle-content">
+              <h3>Rolls-Royce Ghost</h3>
+              <p>Unmatched refinement. Silence as a feature.</p>
+            </div>
+          </article>
+
+          <article class="vehicle-card glass-card reveal scroll-zoom">
+            <div class="vehicle-image">
+              <img src="images/electric.jpg" alt="Electric Performance vehicle" loading="lazy">
+            </div>
+            <div class="vehicle-content">
+              <h3>Tesla Model S Plaid</h3>
+              <p>Zero emissions. Full performance. AI-native.</p>
+            </div>
+          </article>
+
+          <article class="vehicle-card glass-card reveal scroll-zoom highlighted">
+            <div class="vehicle-image">
+              <img src="images/supercar.jpg" alt="Supercar Access vehicle" loading="lazy">
+            </div>
+            <div class="vehicle-content">
+              <h3>Lamborghini Urus</h3>
+              <p>The Ride signature. Raw presence, every arrival.</p>
+            </div>
+          </article>
+
+          <article class="vehicle-card glass-card reveal scroll-zoom">
+            <div class="vehicle-image">
+              <img src="images/xl.jpg" alt="Elite XL vehicle" loading="lazy">
+            </div>
+            <div class="vehicle-content">
+              <h3>Range Rover Autobiography</h3>
+              <p>Group travel with no compromise on luxury.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-card reveal" data-theme="violet" id="fidelity">
+      <div class="container">
+        <div class="fidelity-wrap glass-panel scroll-fade-up">
+          <div class="fidelity-copy">
+            <span class="section-kicker">Fidelity Card</span>
+            <h2 class="section-title">
+              Rewards that make premium mobility worth repeating.
+            </h2>
+            <p class="section-text">
+              The Ride Fidelity Card turns every journey into long-term value.
+              Earn points, unlock exclusive discounts, access priority booking,
+              and get benefits designed for frequent premium riders.
+            </p>
+
+            <ul class="benefit-list">
+              <li>Earn points on every ride</li>
+              <li>Priority access during peak hours</li>
+              <li>Exclusive monthly discounts</li>
+              <li>Members-only offers and upgrades</li>
+            </ul>
+
+            <a href="#" class="btn btn-primary"><span>Get your card</span></a>
+          </div>
+
+          <div class="fidelity-visual">
+            <div class="fidelity-card-ui">
+              <div class="card-shine"></div>
+              <span class="mini-label">Ride Member</span>
+              <h3>Fidelity Card</h3>
+              <p>Premium Access</p>
+              <div class="card-bottom">
+                <span>AI Benefits</span>
+                <span>Priority Tier</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-driver reveal" data-theme="violet" id="become-driver">
+      <div class="container">
+        <div class="driver-layout">
+          <div class="driver-copy scroll-fade-up reveal">
+            <span class="section-kicker">Drive with Ride</span>
+            <h2 class="section-title">Turn your car into something that works for you.</h2>
+            <p class="section-text">
+              Join the Ride driver network. Set your hours, choose your rides, and earn more with a platform built around performance — not just availability.
+            </p>
+            <div class="driver-actions">
+              <a href="#" class="btn btn-primary"><span>Apply to drive</span></a>
+              <a href="#" class="btn btn-secondary"><span>Learn more</span></a>
+            </div>
+          </div>
+          <div class="driver-stats scroll-slide-left reveal">
+            <div class="driver-stat">
+              <span class="stat-value">+40%</span>
+              <span class="stat-label">Average earnings vs standard platforms</span>
+            </div>
+            <div class="driver-stat">
+              <span class="stat-value">Full flex</span>
+              <span class="stat-label">No minimums, no schedules, no pressure</span>
+            </div>
+            <div class="driver-stat">
+              <span class="stat-value">AI dispatch</span>
+              <span class="stat-label">Smarter routing means less dead mileage</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+        <footer class="site-footer reveal">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <img src="logo.png" alt="Ride logo" class="footer-logo">
+            <p>
+              Ride merges AI, premium service, and high-performance vehicles to
+              redefine what urban mobility can feel like.
+            </p>
+          </div>
+
+          <div>
+            <h4>Product</h4>
+            <ul>
+              <li><a href="#">Features</a></li>
+              <li><a href="#">Vehicles</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Rewards</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Contact</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Partners</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Cookies</a></li>
+              <li><a href="#">Licenses</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>© 2026 Ride. All rights reserved.</p>
+          <div class="footer-socials">
+            <a href="#">Instagram</a>
+            <a href="#">X</a>
+            <a href="#">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+  </div>
+
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>
