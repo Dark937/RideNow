@@ -2,7 +2,7 @@
    RIDE — AUTH LOGIC  (scripts/auth.js)
 
    Responsibilities:
-   ─ Session storage (SQLite database)
+   ─ Session storage (localStorage "ride_user")
    ─ Login form validation + submit (login.html)
    ─ Register form validation + submit (register.html)
    ─ Password strength meter (register.html)
@@ -16,143 +16,28 @@
 
 "use strict";
 
-/* ── SQLITE DATABASE SETUP ────────────────────────────────────────── */
-
-let db; // Global SQLite database instance
-let dbReady; // Promise that resolves when DB is ready
-
-async function saveDatabase() {
-  if (!db) return;
-  const data = db.export();
-  const request = indexedDB.open('rideDB', 1);
-  return new Promise((resolve, reject) => {
-    request.onupgradeneeded = () => {
-      const idb = request.result;
-      if (!idb.objectStoreNames.contains('sqlite')) {
-        idb.createObjectStore('sqlite');
-      }
-    };
-    request.onsuccess = () => {
-      const idb = request.result;
-      const transaction = idb.transaction(['sqlite'], 'readwrite');
-      const store = transaction.objectStore('sqlite');
-      const putRequest = store.put(data, 'database');
-      putRequest.onsuccess = () => resolve();
-      putRequest.onerror = () => reject(putRequest.error);
-    };
-    request.onerror = () => reject(request.error);
-  });
-}
-
-async function loadDatabase() {
-  return new Promise((resolve) => {
-    const request = indexedDB.open('rideDB', 1);
-    request.onupgradeneeded = () => {
-      const idb = request.result;
-      if (!idb.objectStoreNames.contains('sqlite')) {
-        idb.createObjectStore('sqlite');
-      }
-    };
-    request.onsuccess = () => {
-      const idb = request.result;
-      const transaction = idb.transaction(['sqlite'], 'readonly');
-      const store = transaction.objectStore('sqlite');
-      const getRequest = store.get('database');
-      getRequest.onsuccess = () => resolve(getRequest.result || null);
-      getRequest.onerror = () => resolve(null);
-    };
-    request.onerror = () => resolve(null);
-  });
-}
-
-async function initDatabase() {
-  // Load sql.js from local assets
-  const SQL = await initSqlJs({ locateFile: file => `assets/${file}` });
-  const savedData = await loadDatabase();
-  if (savedData) {
-    db = new SQL.Database(savedData);
-  } else {
-    db = new SQL.Database();
-  }
-
-  // Create users table if it doesn't exist
-  db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id TEXT PRIMARY KEY,
-      firstName TEXT NOT NULL,
-      lastName TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,  -- In production, hash this!
-      initials TEXT,
-      createdAt TEXT
-    )
-  `);
-
-  // Save initial state
-  await saveDatabase();
-}
-
-dbReady = initDatabase(); // Initialize on load
-
 /* ── STORAGE HELPERS ──────────────────────────────────────────────── */
 
 const Session = {
-  /** Save user object to SQLite (simulate session by storing current user ID) */
-  async save(user) {
-    await dbReady;
-    try {
-      // Insert or replace user in database
-      const stmt = db.prepare(`
-        INSERT OR REPLACE INTO users (id, firstName, lastName, email, password, initials, createdAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
-      stmt.run([user.id, user.firstName, user.lastName, user.email, user.password || '', user.initials, user.createdAt]);
-      stmt.free();
+  KEY: "ride_user",
 
-      // Save database to IndexedDB
-      await saveDatabase();
-
-      // Store current session user ID in localStorage for simplicity
-      localStorage.setItem('current_user_id', user.id);
-    } catch (e) {
-      console.error('Error saving user:', e);
-    }
+  /** Save user object to localStorage */
+  save(user) {
+    try { localStorage.setItem(this.KEY, JSON.stringify(user)); } catch {}
   },
 
   /** Get current user or null */
-  async get() {
-    await dbReady;
-    try {
-      const userId = localStorage.getItem('current_user_id');
-      if (!userId) return null;
-
-      const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
-      const result = stmt.getAsObject([userId]);
-      stmt.free();
-
-      if (result.id) {
-        // Remove password from returned object for security
-        delete result.password;
-        return result;
-      }
-      return null;
-    } catch (e) {
-      console.error('Error getting user:', e);
-      return null;
-    }
+  get() {
+    try { return JSON.parse(localStorage.getItem(this.KEY)) || null; } catch { return null; }
   },
 
   /** Remove session */
   clear() {
-    try {
-      localStorage.removeItem('current_user_id');
-    } catch (e) {
-      console.error('Error clearing session:', e);
-    }
+    try { localStorage.removeItem(this.KEY); } catch {}
   },
 
   /** Check if someone is logged in */
-  async isLoggedIn() { return !!(await this.get()); }
+  isLoggedIn() { return !!this.get(); }
 };
 
 /* ── MOCK AUTH  (replace with real API) ───────────────────────────── */
@@ -166,68 +51,49 @@ const MockAuth = {
   register({ firstName, lastName, email, password }) {
     return new Promise(resolve => {
       setTimeout(() => {
-        try {
-          // Check if email already exists
-          const checkStmt = db.prepare('SELECT id FROM users WHERE email = ?');
-          const existing = checkStmt.getAsObject([email]);
-          checkStmt.free();
-
-          if (existing.id) {
-            resolve({ ok: false, error: 'Email already registered.' });
-            return;
-          }
-
-          // Create user
-          const user = {
+        // Demo: treat any valid input as success
+        resolve({
+          ok: true,
+          user: {
             id:        crypto.randomUUID?.() || Date.now().toString(36),
             firstName,
             lastName,
             email,
-            password,  // In production, hash this!
             initials:  (firstName[0] + lastName[0]).toUpperCase(),
             createdAt: new Date().toISOString()
-          };
-
-          // Save to DB
-          Session.save(user);
-
-          resolve({ ok: true, user });
-        } catch (e) {
-          console.error('Register error:', e);
-          resolve({ ok: false, error: 'Registration failed.' });
-        }
+          }
+        });
       }, 900);
     });
   },
 
   /**
    * Simulated login.
-   * Checks email and password against database.
+   * Demo credentials: any @ride.com email / password "ride123"
+   * Everything else succeeds too (for demo purposes).
    */
   login({ email, password }) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        try {
-          const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
-          const user = stmt.getAsObject([email]);
-          stmt.free();
-
-          if (!user.id || user.password !== password) {
-            resolve({ ok: false, error: 'Invalid email or password.' });
-            return;
-          }
-
-          // Remove password for session
-          delete user.password;
-
-          // Save session
-          Session.save(user);
-
-          resolve({ ok: true, user });
-        } catch (e) {
-          console.error('Login error:', e);
-          resolve({ ok: false, error: 'Login failed.' });
+        // Demo: reject obviously wrong inputs for realism
+        if (!email.includes("@") || password.length < 3) {
+          resolve({ ok: false, error: "Invalid email or password." });
+          return;
         }
+        const parts    = email.split("@")[0].split(".");
+        const first    = parts[0] ? parts[0][0].toUpperCase() + parts[0].slice(1) : "Rider";
+        const last     = parts[1] ? parts[1][0].toUpperCase() + parts[1].slice(1) : "";
+        resolve({
+          ok: true,
+          user: {
+            id:        crypto.randomUUID?.() || Date.now().toString(36),
+            firstName: first,
+            lastName:  last,
+            email,
+            initials:  (first[0] + (last[0] || first[1] || "R")).toUpperCase(),
+            createdAt: new Date().toISOString()
+          }
+        });
       }, 900);
     });
   }
@@ -352,7 +218,7 @@ function initLoginForm() {
       return;
     }
 
-    await Session.save(result.user);
+    Session.save(result.user);
 
     // Redirect back to home (or wherever they came from)
     const redirect = new URLSearchParams(window.location.search).get("redirect") || "index.html";
@@ -418,20 +284,20 @@ function initRegisterForm() {
 
     if (!result.ok) { showBanner(result.error); return; }
 
-    await Session.save(result.user);
+    Session.save(result.user);
     window.location.href = "index.html";
   });
 }
 
 /* ── TOPBAR DROPDOWN (index.html) ─────────────────────────────────── */
 
-async function initTopbarDropdown() {
+function initTopbarDropdown() {
   const profileBtn  = document.querySelector(".profile-btn");
   const profileWrap = document.querySelector(".profile-btn-wrap");
   const dropdown    = document.getElementById("profileDropdown");
   if (!profileBtn || !dropdown) return;
 
-  const user = await Session.get();
+  const user = Session.get();
 
   if (user) {
     /* ── Logged-in state ── */
@@ -503,10 +369,10 @@ function initSocialButtons() {
 
 /* ── BOOTSTRAP ────────────────────────────────────────────────────── */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   initPasswordToggles();
   initLoginForm();
   initRegisterForm();
-  await initTopbarDropdown();
+  initTopbarDropdown();
   initSocialButtons();
 });

@@ -13,9 +13,11 @@
   --text: rgba(255, 255, 255, 0.96);
   --muted: rgba(255, 255, 255, 0.72);
   --muted-2: rgba(255, 255, 255, 0.58);
-  --glow-a: rgba(232, 70, 255, 0.18);
-  --glow-b: rgba(63, 113, 255, 0.18);
-  --features-sticky-top: clamp(96px, 14vh, 160px);
+  /* Accent: shifted from pink→red, secondary blue stronger */
+  --accent-a: rgba(220, 50, 100, 0.22);
+  --accent-b: rgba(48, 110, 255, 0.22);
+  --glow-a: rgba(220, 50, 100, 0.18);
+  --glow-b: rgba(48, 110, 255, 0.22);
 }
 
 html {
@@ -64,51 +66,10 @@ button {
   min-height: 100vh;
   width: 100%;
   background:
-    radial-gradient(circle at 50% 35%, rgba(83, 45, 255, 0.08), transparent 30%),
-    radial-gradient(circle at 20% 80%, rgba(0, 102, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 50% 35%, rgba(83, 45, 255, 0.04), transparent 30%),
+    radial-gradient(circle at 20% 80%, rgba(0, 102, 255, 0.04), transparent 28%),
     transparent;
   overflow: hidden;
-}
-
-.partners-strip {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: clamp(24px, 8vh, 70px);
-  z-index: 16;
-  pointer-events: none;
-}
-
-.partners-inner {
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: partnersMarquee 26s linear infinite;
-}
-
-.marquee-content {
-  display: flex;
-  align-items: center;
-  gap: clamp(26px, 3.5vw, 54px);
-  padding-right: clamp(26px, 3.5vw, 54px);
-}
-
-.partner-logo {
-  flex: 0 0 auto;
-  width: auto;
-  height: clamp(20px, 2.2vw, 28px);
-  max-width: none;
-  opacity: 0.82;
-}
-
-@keyframes partnersMarquee {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
 }
 
 
@@ -253,21 +214,21 @@ button {
   height: auto;
   object-fit: contain;
   filter:
-    drop-shadow(0 0 10px rgba(216, 76, 255, 0.18))
-    drop-shadow(0 0 18px rgba(77, 194, 255, 0.18));
+    drop-shadow(0 0 6px rgba(216, 76, 255, 0.10))
+    drop-shadow(0 0 10px rgba(77, 194, 255, 0.10));
 
 }
 
 .content {
   position: relative;
-  z-index: 15;
+  z-index: 1;
   width: 100%;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 160px 20px 160px;
+  padding: 140px 20px 80px;
 }
 
 .content-inner {
@@ -284,13 +245,13 @@ button {
   font-weight: 800;
   letter-spacing: -2px;
   margin-bottom: 8px;
-  background: linear-gradient(90deg, #ff43ef 0%, #f3a5d6 30%, #9266ff 72%, #4d34ff 100%);
+  background: linear-gradient(90deg, #e8213a 0%, #e05070 28%, #7055ff 65%, #2b6aff 100%);
   background-size: 160% 160%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientShift 6s ease-in-out infinite, titleGlow 3.8s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(164, 89, 255, 0.16));
+  animation: gradientShift 8s ease-in-out infinite, titleGlow 5.5s ease-in-out infinite;
+  filter: none;
 }
 
 .subtitle {
@@ -303,7 +264,7 @@ button {
   text-shadow:
     0 0 12px rgba(255, 255, 255, 0.08),
     0 0 24px rgba(255, 255, 255, 0.06);
-  animation: softWhiteGlow 4s ease-in-out infinite;
+  animation: softWhiteGlow 6s ease-in-out infinite;
 }
 
 .desc {
@@ -339,24 +300,23 @@ button {
   overflow: hidden;
   cursor: pointer;
   transition:
-    transform 0.32s cubic-bezier(.22,1,.36,1),
-    box-shadow 0.32s ease,
-    border-color 0.32s ease,
-    background 0.32s ease;
-  /* iOS 26 Liquid Glass pill */
+    transform 0.38s cubic-bezier(.22,1,.36,1),
+    box-shadow 0.38s ease,
+    border-color 0.38s ease,
+    background 0.38s ease;
   background: linear-gradient(
-    160deg,
-    rgba(255,255,255,0.10) 0%,
-    rgba(255,255,255,0.03) 50%,
-    rgba(255,255,255,0.07) 100%
+    155deg,
+    rgba(255,255,255,0.12) 0%,
+    rgba(255,255,255,0.03) 45%,
+    rgba(255,255,255,0.08) 100%
   );
-  backdrop-filter: url(#lg-btn-filter) blur(20px) saturate(200%) brightness(1.10);
-  -webkit-backdrop-filter: url(#lg-btn-filter) blur(20px) saturate(200%) brightness(1.10);
+  backdrop-filter: url(#lg-btn-filter) blur(22px) saturate(210%) brightness(1.12);
+  -webkit-backdrop-filter: url(#lg-btn-filter) blur(22px) saturate(210%) brightness(1.12);
   box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,0.26),
-    inset 0 -1.5px 0 rgba(0,0,0,0.14),
+    inset 0 1.5px 0 rgba(255,255,255,0.28),
+    inset 0 -1.5px 0 rgba(0,0,0,0.12),
     0 8px 32px rgba(0,0,0,0.28),
-    0 0 0 1px rgba(255,255,255,0.06);
+    0 0 0 1px rgba(255,255,255,0.07);
 }
 
 /* iOS 26 btn: linea speculare orizzontale 1px + micro-glow */
@@ -371,9 +331,9 @@ button {
   background: linear-gradient(
     90deg,
     rgba(255,255,255,0.0)  0%,
-    rgba(255,255,255,0.50) 30%,
-    rgba(255,255,255,0.65) 50%,
-    rgba(255,255,255,0.50) 70%,
+    rgba(255,255,255,0.32) 30%,
+    rgba(255,255,255,0.44) 50%,
+    rgba(255,255,255,0.32) 70%,
     rgba(255,255,255,0.0) 100%
   );
   filter: blur(0.5px);
@@ -401,22 +361,21 @@ button {
 }
 
 .btn-primary {
-  border: 1px solid rgba(220, 80, 255, 0.50);
+  border: 1px solid rgba(60, 130, 255, 0.55);
   box-shadow:
-    inset 0 1.5px 1px rgba(255,255,255,0.22),
-    inset 0 -1px 1px rgba(0,0,0,0.12),
-    0 8px 32px rgba(180, 50, 255, 0.14),
-    0 0 0 1px rgba(200, 60, 255, 0.08),
-    0 1px 0 rgba(255,255,255,0.06);
+    inset 0 1.5px 0 rgba(255,255,255,0.28),
+    inset 0 -1.5px 0 rgba(0,0,0,0.12),
+    0 8px 32px rgba(40, 100, 255, 0.16),
+    0 0 0 1px rgba(60, 120, 255, 0.08);
 }
 
 .btn-secondary {
-  border: 1px solid rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.20);
   box-shadow:
-    inset 0 1.5px 1px rgba(255,255,255,0.18),
-    inset 0 -1px 1px rgba(0,0,0,0.10),
-    0 8px 28px rgba(0,0,0,0.20),
-    0 1px 0 rgba(255,255,255,0.06);
+    inset 0 1.5px 0 rgba(255,255,255,0.28),
+    inset 0 -1.5px 0 rgba(0,0,0,0.12),
+    0 8px 32px rgba(0,0,0,0.22),
+    0 0 0 1px rgba(255,255,255,0.05);
 }
 
 .btn:hover {
@@ -433,30 +392,31 @@ button {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(145deg,
-    rgba(210,80,255,0.18) 0%,
-    rgba(140,60,255,0.10) 50%,
-    rgba(180,70,255,0.15) 100%
+  background: linear-gradient(155deg,
+    rgba(40,100,255,0.16) 0%,
+    rgba(30,80,255,0.06) 45%,
+    rgba(50,110,255,0.12) 100%
   );
   box-shadow:
-    inset 0 1.5px 1px rgba(255,255,255,0.24),
-    0 16px 40px rgba(200, 60, 255, 0.22),
-    0 0 40px rgba(160, 80, 255, 0.16),
-    0 0 0 1px rgba(220, 80, 255, 0.20);
-  border-color: rgba(240, 100, 255, 0.75);
+    inset 0 1.5px 0 rgba(255,255,255,0.30),
+    inset 0 -1.5px 0 rgba(0,0,0,0.12),
+    0 12px 36px rgba(40, 100, 255, 0.22),
+    0 0 0 1px rgba(60, 130, 255, 0.12);
+  border-color: rgba(80, 150, 255, 0.65);
 }
 
 .btn-secondary:hover {
-  background: linear-gradient(145deg,
-    rgba(255,255,255,0.16) 0%,
-    rgba(255,255,255,0.07) 50%,
-    rgba(255,255,255,0.12) 100%
+  background: linear-gradient(155deg,
+    rgba(255,255,255,0.14) 0%,
+    rgba(255,255,255,0.04) 45%,
+    rgba(255,255,255,0.10) 100%
   );
   box-shadow:
-    inset 0 1.5px 1px rgba(255,255,255,0.24),
-    0 14px 36px rgba(0,0,0,0.28),
-    0 0 28px rgba(255,255,255,0.07);
-  border-color: rgba(255,255,255,0.45);
+    inset 0 1.5px 0 rgba(255,255,255,0.32),
+    inset 0 -1.5px 0 rgba(0,0,0,0.12),
+    0 12px 32px rgba(0,0,0,0.28),
+    0 0 0 1px rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.32);
 }
 
 .spline-bg {
@@ -466,46 +426,210 @@ button {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 0.88;
   overflow: hidden;
   will-change: transform;
-  mask-image: linear-gradient(to top, transparent 0%, #000 30%, #000 70%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  /* Soft radial vignette — fades edges, keeps center vivid */
+  mask-image:
+    radial-gradient(ellipse 88% 78% at 50% 38%, #000 35%, rgba(0,0,0,0.55) 62%, transparent 82%);
+  -webkit-mask-image:
+    radial-gradient(ellipse 88% 78% at 50% 38%, #000 35%, rgba(0,0,0,0.55) 62%, transparent 82%);
 }
 
 spline-viewer {
   width: 100%;
   height: 100%;
   background: transparent !important;
-  mix-blend-mode: screen;
-  filter:
-    saturate(1.05)
-    brightness(0.96)
-    drop-shadow(0 0 30px rgba(75, 72, 255, 0.12));
+  /* No mix-blend-mode on pure black — it kills contrast */
+  filter: saturate(1.05) brightness(0.78) contrast(1.04);
   overflow: hidden;
 }
 
 .bottom-fade {
   position: absolute;
   inset: auto 0 0 0;
-  height: 36vh;
+  height: 50vh;
   z-index: 2;
   pointer-events: none;
-  background:
-    linear-gradient(to top, rgba(0,0,0,0.35), transparent 42%),
-    radial-gradient(circle at 60% 100%, rgba(77, 57, 255, 0.14), transparent 32%),
-    radial-gradient(circle at 25% 100%, rgba(0, 119, 255, 0.12), transparent 28%);
-  filter: blur(8px);
+  background: linear-gradient(to top,
+    #000000 0%,
+    rgba(0,0,0,0.92) 18%,
+    rgba(0,0,0,0.60) 44%,
+    rgba(0,0,0,0.18) 72%,
+    transparent 100%
+  );
 }
 
 .ride-main {
   position: relative;
-  /* No z-index here — it creates a stacking context that traps fixed children above it */
   /* solid background covers the fixed spline once user scrolls past hero */
   background:
-    radial-gradient(circle at 15% 10%, rgba(87, 40, 255, 0.08), transparent 24%),
-    radial-gradient(circle at 80% 30%, rgba(0, 110, 255, 0.07), transparent 26%),
+    radial-gradient(circle at 15% 10%, rgba(87, 40, 255, 0.04), transparent 24%),
+    radial-gradient(circle at 80% 30%, rgba(0, 110, 255, 0.03), transparent 26%),
     #000;
+}
+
+/* ── PARTNERS MARQUEE STRIP ─────────────────────────────────────── */
+
+.partners-strip {
+  position: absolute;
+  /* Sits at ~55% of hero height — between title and bottom of screen */
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3; /* above spline (z:0), below content (z:1) */
+  /* Partial width — floating island */
+  width: min(780px, 82vw);
+  padding: 18px 0 20px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  overflow: hidden;
+  /* Horizontal edge dissolve */
+  mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.7) 9%,
+    #000 20%,
+    #000 80%,
+    rgba(0,0,0,0.7) 91%,
+    transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.7) 9%,
+    #000 20%,
+    #000 80%,
+    rgba(0,0,0,0.7) 91%,
+    transparent 100%);
+  /* No background - floats above spline */
+  background: transparent;
+}
+
+.partners-inner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  /* Remove label from floating strip - only logos */
+}
+
+/* Hide label in hero context */
+.hero .partners-label {
+  display: none;
+}
+
+.partners-label {
+  flex-shrink: 0;
+  padding: 0 40px 0 32px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  white-space: nowrap;
+}
+
+.marquee-track {
+  display: flex;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  padding-right: 60px;
+  flex-shrink: 0;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee-track:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+.partner-logo {
+  height: 17px;
+  width: auto;
+  opacity: 0.22;
+  filter: brightness(10);
+  transition: opacity 0.4s ease;
+  flex-shrink: 0;
+  display: block;
+}
+
+.partner-logo:hover {
+  opacity: 0.45;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── MOBILE FEATURE CARDS (< 1024px) ────────────────────────────── */
+
+.mobile-features-grid {
+  display: none; /* hidden on desktop */
+}
+
+.mobile-feature-card {
+  display: none; /* hidden on desktop */
+  flex-direction: column;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(158deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.mobile-feature-card-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #111;
+}
+
+.mobile-feature-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.05) brightness(0.88);
+}
+
+.mobile-feature-card-body {
+  padding: 22px 22px 24px;
+}
+
+.mobile-feature-card-body .section-kicker {
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+
+.mobile-feature-card-body h3 {
+  font-size: clamp(20px, 4.5vw, 26px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.mobile-feature-card-body p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+/* ── END MOBILE FEATURE CARDS ──────────────────────────────────── */
+
+/* Sections after features paint above fixed text/image layers (z-index 5).
+   position:relative + z-index form an actual stacking context. */
+.section:not(.section-parallax-features) {
+  position: relative;
+  isolation: isolate;
+  z-index: 30;
+  background: #000; /* ensure solid bg so fixed elements never bleed through */
 }
 
 .container {
@@ -519,6 +643,7 @@ spline-viewer {
   position: relative;
   padding: 140px 0;
   overflow: visible;
+  background: #000; /* explicit black so fixed elements never show through */
 }
 .section:not(.section-parallax-features) {
   overflow: clip;
@@ -534,21 +659,21 @@ spline-viewer {
 
 .section[data-theme="violet"] {
   background:
-    radial-gradient(circle at 20% 20%, rgba(151, 82, 255, 0.09), transparent 25%),
-    #000;
+    radial-gradient(circle at 20% 20%, rgba(151, 82, 255, 0.04), transparent 25%),
+    #000000;
 }
 
 .section[data-theme="blue"] {
   background:
-    radial-gradient(circle at 80% 20%, rgba(48, 111, 255, 0.10), transparent 24%),
-    #000;
+    radial-gradient(circle at 80% 20%, rgba(48, 111, 255, 0.08), transparent 24%),
+    #000000;
 }
 
 .section[data-theme="mix"] {
   background:
-    radial-gradient(circle at 20% 20%, rgba(151, 82, 255, 0.08), transparent 24%),
-    radial-gradient(circle at 80% 70%, rgba(48, 111, 255, 0.08), transparent 24%),
-    #000;
+    radial-gradient(circle at 20% 20%, rgba(151, 82, 255, 0.06), transparent 24%),
+    radial-gradient(circle at 80% 70%, rgba(48, 111, 255, 0.06), transparent 24%),
+    #000000;
 }
 
 .section-kicker {
@@ -558,7 +683,7 @@ spline-viewer {
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(198, 162, 255, 0.92);
+  color: rgba(140, 175, 255, 0.90);
 }
 
 .section-title {
@@ -612,30 +737,25 @@ spline-viewer {
 .glass-panel {
   position: relative;
   overflow: hidden;
-  /* iOS 26 Liquid Glass — three Apple layers:
-     1. Tinted base (semi-transparent body)
-     2. Illumination (soft glow from within)
-     3. Specular highlight (top edge "lip")
-  */
   background:
     linear-gradient(
-      160deg,
-      rgba(255,255,255,0.07) 0%,
-      rgba(255,255,255,0.02) 50%,
-      rgba(255,255,255,0.05) 100%
+      158deg,
+      rgba(255,255,255,0.09) 0%,
+      rgba(255,255,255,0.025) 40%,
+      rgba(255,255,255,0.055) 100%
     );
-  border: 1px solid rgba(255,255,255,0.14);
-  border-bottom-color: rgba(255,255,255,0.05);
-  border-right-color: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-bottom-color: rgba(255,255,255,0.04);
+  border-right-color: rgba(255,255,255,0.04);
   box-shadow:
-    0 20px 60px rgba(0,0,0,0.32),
-    0 4px 16px rgba(0,0,0,0.14),
-    inset 0 1px 0 rgba(255,255,255,0.10),
-    inset 0 -1px 0 rgba(0,0,0,0.10),
-    0 0 0 1px rgba(255,255,255,0.03);
-  /* SVG refraction filter wraps backdrop-filter */
-  backdrop-filter: url(#lg-card-filter) blur(22px) saturate(190%) brightness(1.05);
-  -webkit-backdrop-filter: url(#lg-card-filter) blur(22px) saturate(190%) brightness(1.05);
+    0 20px 56px rgba(0,0,0,0.36),
+    0 6px 16px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.13),
+    inset 0 -1px 0 rgba(0,0,0,0.08),
+    inset 1px 0 0 rgba(255,255,255,0.05);
+  backdrop-filter: url(#lg-card-filter) blur(24px) saturate(200%) brightness(1.06);
+  -webkit-backdrop-filter: url(#lg-card-filter) blur(24px) saturate(200%) brightness(1.06);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 /* iOS 26 glass: sottile linea speculare sul bordo superiore + sfumatura veloce */
@@ -651,9 +771,9 @@ spline-viewer {
   background: linear-gradient(
     90deg,
     rgba(255,255,255,0.0)  0%,
-    rgba(255,255,255,0.30) 20%,
-    rgba(255,255,255,0.42) 50%,
-    rgba(255,255,255,0.30) 80%,
+    rgba(255,255,255,0.22) 15%,
+    rgba(255,255,255,0.48) 50%,
+    rgba(255,255,255,0.22) 85%,
     rgba(255,255,255,0.0) 100%
   );
   pointer-events: none;
@@ -668,10 +788,12 @@ spline-viewer {
   inset: 0;
   border-radius: inherit;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 110%, rgba(160,120,255,0.10), transparent 65%),
-    radial-gradient(ellipse 60% 40% at 15% 85%, rgba(80,140,255,0.07), transparent 55%);
+    radial-gradient(ellipse 70% 55% at 50% 115%, rgba(148,108,255,0.13), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 12% 88%, rgba(70,130,255,0.09), transparent 52%),
+    radial-gradient(ellipse 45% 35% at 88% 85%, rgba(200,90,255,0.07), transparent 52%);
   pointer-events: none;
   z-index: 0;
+  transition: opacity 0.5s ease;
 }
 
 .feature-grid {
@@ -702,15 +824,16 @@ spline-viewer {
   border-radius: 32px;
   min-height: 280px;
   cursor: pointer;
-  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1), box-shadow 0.4s ease, border-color 0.35s ease;
   position: relative;
   overflow: hidden;
+  transform-origin: center bottom;
 }
 
 /* Gradient top accent per card */
-.step-card:nth-child(1)::after { background: radial-gradient(ellipse at 30% 0%, rgba(200,80,255,0.14), transparent 60%); }
-.step-card:nth-child(2)::after { background: radial-gradient(ellipse at 50% 0%, rgba(130,80,255,0.14), transparent 60%); }
-.step-card:nth-child(3)::after { background: radial-gradient(ellipse at 70% 0%, rgba(60,120,255,0.14), transparent 60%); }
+.step-card:nth-child(1)::after { background: radial-gradient(ellipse at 30% 0%, rgba(200,80,255,0.07), transparent 60%); }
+.step-card:nth-child(2)::after { background: radial-gradient(ellipse at 50% 0%, rgba(130,80,255,0.07), transparent 60%); }
+.step-card:nth-child(3)::after { background: radial-gradient(ellipse at 70% 0%, rgba(60,120,255,0.07), transparent 60%); }
 .step-card::after {
   content: "";
   position: absolute;
@@ -735,18 +858,18 @@ spline-viewer {
 }
 .step-card:nth-child(1) .step-icon {
   background: linear-gradient(135deg, rgba(220,80,255,0.20), rgba(180,60,255,0.10));
-  border: 1px solid rgba(220,80,255,0.35);
-  box-shadow: 0 0 20px rgba(200,80,255,0.18);
+  border: 1px solid rgba(220,80,255,0.18);
+  box-shadow: none;
 }
 .step-card:nth-child(2) .step-icon {
   background: linear-gradient(135deg, rgba(140,80,255,0.20), rgba(100,60,255,0.10));
-  border: 1px solid rgba(140,80,255,0.35);
-  box-shadow: 0 0 20px rgba(120,80,255,0.18);
+  border: 1px solid rgba(140,80,255,0.18);
+  box-shadow: none;
 }
 .step-card:nth-child(3) .step-icon {
   background: linear-gradient(135deg, rgba(60,120,255,0.20), rgba(40,100,255,0.10));
-  border: 1px solid rgba(60,120,255,0.35);
-  box-shadow: 0 0 20px rgba(60,120,255,0.18);
+  border: 1px solid rgba(60,120,255,0.18);
+  box-shadow: none;
 }
 
 .step-icon svg {
@@ -784,21 +907,29 @@ spline-viewer {
 }
 
 .feature-card:hover,
-.step-card:hover,
 .vehicle-card:hover {
   transform: translateY(-8px);
   box-shadow:
     inset 0 1px 1px rgba(255,255,255,0.1),
     0 20px 50px rgba(0,0,0,0.28),
-    0 0 40px rgba(120, 87, 255, 0.10);
+    0 0 24px rgba(120, 87, 255, 0.06);
+  border-color: var(--border-strong);
+}
+
+.step-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.12),
+    0 24px 56px rgba(0,0,0,0.32),
+    0 0 0 1px rgba(255,255,255,0.08);
   border-color: var(--border-strong);
 }
 
 .vehicle-card.highlighted {
   box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.08),
-    0 18px 48px rgba(96, 58, 255, 0.15),
-    0 0 44px rgba(218, 73, 255, 0.08);
+    inset 0 1px 1px rgba(255,255,255,0.06),
+    0 14px 40px rgba(96, 58, 255, 0.10),
+    0 0 28px rgba(218, 73, 255, 0.05);
 }
 
 .feature-number,
@@ -854,7 +985,7 @@ spline-viewer {
 
 /* Cursor tilt on cards */
 .vehicle-card,
-.feature-panel-media {
+.features-image-card {
   transform-style: preserve-3d;
   will-change: transform;
   perspective: 900px;
@@ -864,7 +995,7 @@ spline-viewer {
   box-shadow:
     inset 0 1.5px 1px rgba(255,255,255,0.16),
     0 28px 60px rgba(0,0,0,0.45),
-    0 0 50px rgba(120, 87, 255, 0.14) !important;
+    0 0 30px rgba(120, 87, 255, 0.08) !important;
 }
 
 .fidelity-wrap {
@@ -901,8 +1032,8 @@ spline-viewer {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f445ff, #4d7dff);
-  box-shadow: 0 0 12px rgba(152, 88, 255, 0.22);
+  background: linear-gradient(135deg, #e02040, #2b6aff);
+  box-shadow: 0 0 8px rgba(152, 88, 255, 0.12);
 }
 
 .fidelity-visual {
@@ -919,15 +1050,17 @@ spline-viewer {
   border-radius: 30px;
   overflow: hidden;
   cursor: pointer;
+  /* Image bg set via inline style; gradient is fallback overlay */
   background:
-    linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04)),
-    radial-gradient(circle at 20% 20%, rgba(244, 80, 255, 0.18), transparent 32%),
-    radial-gradient(circle at 80% 80%, rgba(62, 109, 255, 0.16), transparent 36%);
+    linear-gradient(135deg, rgba(0,0,0,0.42), rgba(0,0,0,0.20)),
+    radial-gradient(circle at 20% 20%, rgba(244, 80, 255, 0.08), transparent 32%),
+    radial-gradient(circle at 80% 80%, rgba(62, 109, 255, 0.08), transparent 36%);
+  background-blend-mode: multiply, normal, normal;
   border: 1px solid rgba(255,255,255,0.16);
   box-shadow:
     inset 0 1px 1px rgba(255,255,255,0.14),
     0 20px 60px rgba(0,0,0,0.30),
-    0 0 50px rgba(132, 83, 255, 0.12);
+    0 0 30px rgba(132, 83, 255, 0.07);
 }
 
 .card-shine {
@@ -1029,18 +1162,20 @@ spline-viewer {
 
 .section-parallax-features {
   position: relative;
-  padding: 80px 0 0;
-  /* overflow MUST be visible — clip/hidden/auto all break position:sticky on children */
+  padding: 0;
   overflow: visible;
+  margin-top: 0;
+  /* z-index below sections that follow, above spline */
+  z-index: 10;
   background:
-    radial-gradient(circle at 20% 10%, rgba(139, 72, 255, 0.10), transparent 28%),
-    radial-gradient(circle at 80% 80%, rgba(44, 119, 255, 0.10), transparent 30%),
+    radial-gradient(circle at 20% 10%, rgba(139, 72, 255, 0.05), transparent 28%),
+    radial-gradient(circle at 80% 80%, rgba(44, 119, 255, 0.05), transparent 30%),
     #000;
 }
 
 .section-parallax-features .container {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 .parallax-bg-layer {
@@ -1049,111 +1184,100 @@ spline-viewer {
   pointer-events: none;
   background:
     radial-gradient(circle at 50% 20%, rgba(255,255,255,0.03), transparent 24%),
-    radial-gradient(circle at 18% 25%, rgba(226, 82, 255, 0.10), transparent 22%),
-    radial-gradient(circle at 82% 72%, rgba(70, 116, 255, 0.10), transparent 24%);
+    radial-gradient(circle at 18% 25%, rgba(226, 82, 255, 0.04), transparent 22%),
+    radial-gradient(circle at 82% 72%, rgba(70, 116, 255, 0.04), transparent 24%);
   filter: blur(14px);
 }
 
 .features-layout {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(320px, 0.92fr) minmax(0, 1.08fr);
-  gap: 80px;
-  /* stretch so features-left column is as tall as features-right */
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
   align-items: start;
+  /* top spacer so text panel isn't flush against hero bottom */
+  padding-top: 10vh;
 }
 
 .features-left {
   position: relative;
   align-self: start;
-  z-index: 3;
+  z-index: 1;
 }
 
 .features-left-inner {
-  position: sticky;
-  top: var(--features-sticky-top);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   max-width: 520px;
   padding-right: 40px;
   will-change: opacity;
-  pointer-events: auto;
-}
-
-.features-image-fixed {
-  display: none;
+  pointer-events: none;
+  z-index: 5;
+  /* JS sets position:fixed + top/left/width directly */
 }
 
 .features-right {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 28vh;
-  padding: 32vh 0 60vh;
-  z-index: 2;
+  gap: 0;
+  padding: 0;
+  z-index: 1;
+  /* purely scroll triggers — no visual content */
 }
 
 .feature-panel {
-  position: relative;
-  min-height: 72vh;
+  /* Invisible scroll trigger — same height as viewport so each panel
+     occupies one full screen of scroll distance */
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Active/passed states only matter for JS tracking, no visual on panels */
+.feature-panel.active,
+.feature-panel.passed { opacity: 0; }
+
+/* ── Fixed image container: mirrors features-left-inner positioning ── */
+.features-image-fixed {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  opacity: 0.20;
-  transform: translateY(90px) scale(0.93);
-  filter: blur(3px);
-  transition:
-    opacity 0.65s ease,
-    transform 0.8s cubic-bezier(.22,1,.36,1),
-    filter 0.65s ease;
+  z-index: 5;
+  /* JS sets position:fixed + top/left/width/height */
 }
 
-.feature-panel.active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
-
-.feature-panel.passed {
-  opacity: 0.10;
-  transform: translateY(-50px) scale(0.92);
-  filter: blur(3px);
-}
-
-.feature-panel-media {
-  position: relative;
+/* The actual image card — transitions identically to text */
+.features-image-card {
   width: 100%;
-  max-width: 650px;
-  margin-left: auto;
-  border-radius: 32px;
+  max-width: 520px;
+  border-radius: 28px;
   overflow: hidden;
-  cursor: pointer;
-  background: linear-gradient(145deg,
-    rgba(255,255,255,0.10) 0%,
-    rgba(255,255,255,0.03) 50%,
-    rgba(255,255,255,0.06) 100%
-  );
-  border: 1px solid rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.12);
   box-shadow:
-    inset 0 1.5px 1px rgba(255,255,255,0.14),
-    inset 0 -1px 1px rgba(0,0,0,0.10),
-    0 28px 80px rgba(0,0,0,0.42),
-    0 0 60px rgba(100, 78, 255, 0.10),
-    0 0 0 1px rgba(255,255,255,0.04);
+    0 24px 64px rgba(0,0,0,0.45),
+    0 4px 16px rgba(0,0,0,0.20),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+  transition:
+    opacity 0.42s cubic-bezier(.4,0,.2,1),
+    transform 0.42s cubic-bezier(.4,0,.2,1);
 }
 
-.feature-panel-media img {
+.features-image-card.is-entering {
+  opacity: 0;
+  transform: translateY(32px) scale(0.97);
+}
+
+.features-image-card img {
   width: 100%;
   aspect-ratio: 16 / 10;
   object-fit: cover;
-  transform: scale(1.03);
-  transition: transform 0.9s ease;
+  display: block;
+  filter: saturate(1.05) brightness(0.96);
 }
 
-.feature-panel.active .feature-panel-media img {
-  transform: scale(1);
-}
+/* feature-panel-media removed — images now managed by .features-image-fixed */
 
 .feature-panel-content {
   display: none;
@@ -1206,9 +1330,9 @@ spline-viewer {
 }
 
 .progress-dot.active {
-  background: linear-gradient(135deg, #ff58e8, #5f7cff);
+  background: linear-gradient(135deg, #e02040, #2b6aff);
   transform: scale(1.35);
-  box-shadow: 0 0 16px rgba(137, 88, 255, 0.28);
+  box-shadow: none;
 }
 
 /* SUPERCAR 3D */
@@ -1314,25 +1438,29 @@ spline-viewer {
 
 @keyframes titleGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 10px rgba(255, 72, 237, 0.12))
-            drop-shadow(0 0 24px rgba(88, 71, 255, 0.12));
+    filter: drop-shadow(0 0 8px rgba(220, 45, 70, 0.10))
+            drop-shadow(0 0 20px rgba(40, 100, 255, 0.12));
   }
-  50% {
-    filter: drop-shadow(0 0 18px rgba(255, 72, 237, 0.24))
-            drop-shadow(0 0 34px rgba(88, 71, 255, 0.22));
+  33% {
+    filter: drop-shadow(0 0 16px rgba(220, 45, 70, 0.22))
+            drop-shadow(0 0 32px rgba(40, 100, 255, 0.22));
+  }
+  66% {
+    filter: drop-shadow(0 0 12px rgba(180, 35, 55, 0.18))
+            drop-shadow(0 0 28px rgba(55, 120, 255, 0.18));
   }
 }
 
 @keyframes softWhiteGlow {
   0%, 100% {
     text-shadow:
-      0 0 10px rgba(255,255,255,0.07),
-      0 0 18px rgba(255,255,255,0.04);
+      0 0 8px rgba(255,255,255,0.05),
+      0 0 16px rgba(255,255,255,0.03);
   }
   50% {
     text-shadow:
-      0 0 18px rgba(255,255,255,0.12),
-      0 0 28px rgba(255,255,255,0.06);
+      0 0 16px rgba(255,255,255,0.11),
+      0 0 30px rgba(255,255,255,0.05);
   }
 }
 
@@ -1559,6 +1687,35 @@ spline-viewer {
 
 /* RESPONSIVE */
 
+/* ── INTERMEDIATE BREAKPOINTS: 1024–1280px ───────────────────────── */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .container {
+    padding: 0 48px;
+  }
+
+  .features-layout {
+    padding-top: 8vh;
+  }
+
+  /* More conservative text sizing */
+  .section-title {
+    font-size: clamp(30px, 3.4vw, 48px);
+  }
+
+  /* Compress desktop feature panels gap slightly */
+  .features-left-inner {
+    padding-right: 28px;
+  }
+}
+
+@media (min-width: 1281px) and (max-width: 1440px) {
+  .container {
+    padding: 0 40px;
+  }
+}
+
+/* ── END INTERMEDIATE ──────────────────────────────────────────── */
+
 @media (max-width: 1100px) {
   .section-top.split,
   .fidelity-wrap,
@@ -1579,53 +1736,91 @@ spline-viewer {
 }
 
 @media (max-width: 1024px) {
-  .supercar-layout,
-  .features-layout {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(320px, 0.92fr) minmax(0, 1.08fr);
-  gap: 80px;
-  /* stretch so features-left column is as tall as features-right */
-  align-items: start;
-}
-
+  /* ── MOBILE FEATURES: stacked cards, no JS parallax ── */
   .section-parallax-features {
-    min-height: auto;
-    padding: 100px 0;
+    min-height: auto !important;
+    height: auto !important;
+    padding: 80px 0 80px;
+    overflow: clip;
   }
 
+  /* Disable JS-set inline heights on the section */
+  .section-parallax-features[style*="height"] {
+    height: auto !important;
+  }
+
+  .features-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 0;
+  }
+
+  /* Left text area: static, full width */
   .features-left {
-  position: relative;
-  align-self: start;
-  z-index: 3;
-}
-
-  .features-left-inner {
     position: static;
-    top: auto;
-    max-width: none;
-    padding-right: 0;
-  }
-
-  .features-right {
-    gap: 56px;
+    z-index: auto;
+    background: none;
     padding: 0;
+    margin-bottom: 0;
   }
 
-  .feature-panel {
-    min-height: auto;
-    opacity: 1;
-    transform: none;
-    filter: none;
+  /* Force static on inner — override any JS styles */
+  .features-left-inner {
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    pointer-events: auto;
+    padding-right: 0;
+    max-width: 100%;
+    /* Hidden on mobile — we show per-card text instead */
+    display: none !important;
   }
 
-  .feature-panel-content {
-    position: relative;
-    width: 100%;
-    margin-top: 16px;
-    bottom: auto;
-    opacity: 1;
-    transform: none;
+  /* Hide scroll trigger panels */
+  .features-right {
+    display: none !important;
+  }
+
+  /* Image fixed container: static on mobile */
+  .features-image-fixed {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    margin-top: 0;
+  }
+
+  .features-image-card {
+    max-width: 100%;
+    opacity: 1 !important;
+    transform: none !important;
+    /* Hide the JS-driven image card — we show static cards below */
+    display: none !important;
+  }
+
+  .feature-progress {
+    display: none;
+  }
+
+  /* Show mobile feature cards grid */
+  .mobile-features-grid {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 4px;
+  }
+
+  .mobile-feature-card {
+    display: flex !important;
+  }
+
+  .supercar-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 
   .supercar-stage {
@@ -1648,7 +1843,9 @@ spline-viewer {
   }
 
   .spline-bg {
-    height: 46vh;
+    height: 55vh;
+    top: 0;
+    transform: none !important;
   }
 }
 
@@ -1735,7 +1932,8 @@ spline-viewer {
   }
 
   .spline-bg {
-    height: 40vh;
-    min-height: 260px;
+    height: 50vh;
+    min-height: 220px;
+    top: 0;
   }
 }
