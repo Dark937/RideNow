@@ -348,23 +348,34 @@ document.addEventListener("DOMContentLoaded", () => {
     addTiltEffect(".features-image-card");
 
     // ── Hamburger menu ──────────────────────────────────────────────────
-    const menuBtn   = document.querySelector(".menu-btn");
-    const navClose  = document.getElementById("navClose");
+    const menuBtn = document.querySelector(".menu-btn");
+    const navClose = document.getElementById("navClose");
     const navOverlay = document.getElementById("navOverlay");
-    const navLinks  = document.querySelectorAll(".nav-link");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    if (!menuBtn || !navClose || !navOverlay) return;
 
     function openMenu() {
       navOverlay.classList.add("is-open");
       navOverlay.setAttribute("aria-hidden", "false");
+      menuBtn.setAttribute("aria-expanded", "true");
       document.body.style.overflow = "hidden";
     }
     function closeMenu() {
       navOverlay.classList.remove("is-open");
       navOverlay.setAttribute("aria-hidden", "true");
+      menuBtn.setAttribute("aria-expanded", "false");
       document.body.style.overflow = "";
     }
 
-    menuBtn.addEventListener("click", openMenu);
+    menuBtn.addEventListener("click", () => {
+      const isOpen = navOverlay.classList.contains("is-open");
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
     navClose.addEventListener("click", closeMenu);
     navLinks.forEach(link => {
       link.addEventListener("click", (e) => {
@@ -374,11 +385,8 @@ document.addEventListener("DOMContentLoaded", () => {
           closeMenu();
           const target = document.getElementById("features-parallax");
           if (target) {
-            // On mobile, just scroll to section. On desktop, scroll so first panel is centered.
             const topbarH = 72;
-            const offset = window.innerWidth > 1024
-              ? target.getBoundingClientRect().top + window.scrollY - topbarH
-              : target.getBoundingClientRect().top + window.scrollY - topbarH;
+            const offset = target.getBoundingClientRect().top + window.scrollY - topbarH;
             window.scrollTo({ top: offset, behavior: "smooth" });
           }
         } else {
