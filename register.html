@@ -46,14 +46,13 @@
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
-          Sign up with Google
+          Continue with Google
         </button>
-
         <button class="auth-social-btn" type="button">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
           </svg>
-          Sign up with Apple
+          Continue with Apple
         </button>
       </div>
 
@@ -65,32 +64,19 @@
 
         <div class="auth-fields">
 
-          <!-- First + Last name — two columns -->
-          <div class="auth-name-row">
+          <!-- Name row -->
+          <div class="auth-fields-row">
             <div class="auth-field">
               <label for="regFirst">First name</label>
               <div class="auth-field-row">
-                <input
-                  type="text"
-                  id="regFirst"
-                  name="firstName"
-                  placeholder="Marco"
-                  autocomplete="given-name"
-                  required>
+                <input type="text" id="regFirst" name="firstName" placeholder="Marco" autocomplete="given-name" required>
               </div>
               <span class="auth-field-error" role="alert"></span>
             </div>
-
             <div class="auth-field">
               <label for="regLast">Last name</label>
               <div class="auth-field-row">
-                <input
-                  type="text"
-                  id="regLast"
-                  name="lastName"
-                  placeholder="Rossi"
-                  autocomplete="family-name"
-                  required>
+                <input type="text" id="regLast" name="lastName" placeholder="Rossi" autocomplete="family-name" required>
               </div>
               <span class="auth-field-error" role="alert"></span>
             </div>
@@ -100,13 +86,7 @@
           <div class="auth-field">
             <label for="regEmail">Email address</label>
             <div class="auth-field-row">
-              <input
-                type="email"
-                id="regEmail"
-                name="email"
-                placeholder="you@example.com"
-                autocomplete="email"
-                required>
+              <input type="email" id="regEmail" name="email" placeholder="you@example.com" autocomplete="email" required>
             </div>
             <span class="auth-field-error" role="alert"></span>
           </div>
@@ -115,41 +95,25 @@
           <div class="auth-field">
             <label for="regPassword">Password</label>
             <div class="auth-field-row">
-              <input
-                type="password"
-                id="regPassword"
-                name="password"
-                placeholder="Minimum 8 characters"
-                class="has-toggle"
-                autocomplete="new-password"
-                required>
+              <input type="password" id="regPassword" name="password" placeholder="Min. 8 characters" class="has-toggle" autocomplete="new-password" required>
               <button type="button" class="auth-toggle" aria-label="Show password">
                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
+            <span class="auth-field-error" role="alert"></span>
             <!-- Strength meter -->
-            <div class="auth-strength">
-              <div class="strength-bar">
-                <span></span><span></span><span></span><span></span>
-              </div>
+            <div class="strength-wrap">
+              <div class="strength-bar"><span></span><span></span><span></span><span></span></div>
               <span class="strength-label"></span>
             </div>
-            <span class="auth-field-error" role="alert"></span>
           </div>
 
           <!-- Confirm password -->
           <div class="auth-field">
             <label for="regConfirm">Confirm password</label>
             <div class="auth-field-row">
-              <input
-                type="password"
-                id="regConfirm"
-                name="confirmPassword"
-                placeholder="Repeat your password"
-                class="has-toggle"
-                autocomplete="new-password"
-                required>
-              <button type="button" class="auth-toggle" aria-label="Show confirm password">
+              <input type="password" id="regConfirm" name="confirm" placeholder="Repeat password" class="has-toggle" autocomplete="new-password" required>
+              <button type="button" class="auth-toggle" aria-label="Show password">
                 <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
@@ -158,13 +122,11 @@
 
         </div>
 
-        <!-- Terms checkbox -->
-        <div class="auth-terms">
+        <!-- Terms -->
+        <label class="auth-checkbox">
           <input type="checkbox" id="regTerms" name="terms">
-          <label for="regTerms">
-            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-          </label>
-        </div>
+          <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+        </label>
 
         <!-- Submit -->
         <button type="submit" id="registerSubmit" class="auth-submit">
@@ -180,26 +142,37 @@
 
       </form>
 
-      <!-- Legal -->
-      <p class="auth-legal">
-        By creating an account you confirm you are 18+
-        and agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.
-      </p>
-
     </div>
   </div><!-- /auth-left -->
 
 
   <!-- ══════════════════════════════════════════════════════════════
-       RIGHT PANEL — Animated app showcase (same as login)
+       RIGHT PANEL — Animated app showcase
        ══════════════════════════════════════════════════════════════ -->
   <div class="auth-right" aria-hidden="true">
 
     <div class="auth-glow"></div>
 
     <div class="auth-grid">
-
-      <!-- ── SET A ──────────────────────────────────────────────── -->
+      <div class="ac ac-solid blue"><h3>Move faster. Ride smarter.</h3><p>AI-powered routing that thinks ahead</p></div>
+      <div class="ac ac-stat"><span class="lbl">Avg ride rating</span><span class="val">4.97</span><span class="sub">across 2.4M trips</span><span class="badge">↑ 0.12 this month</span></div>
+      <div class="ac ac-map"><div class="pin"></div><span class="pin-lbl">Live tracking</span></div>
+      <div class="ac ac-solid dark"><h3>Zero wait time.</h3><p>Driver matched before you finish booking</p></div>
+      <div class="ac ac-stat"><span class="lbl">Cities active</span><span class="val">38</span><span class="sub">and expanding</span><span class="badge">↑ 5 new this Q</span></div>
+      <div class="ac ac-route"><div><div class="r-line"><div class="r-dot from"></div> Piazza Navona</div><div class="r-conn"></div><div class="r-line"><div class="r-dot to"></div> Fiumicino Airport</div></div><div class="r-eta">22 <span>min away</span></div></div>
+      <div class="ac ac-solid red"><h3>Supercar fleet. Real streets.</h3><p>Performance isn't optional. It's standard.</p></div>
+      <div class="ac ac-stat"><span class="lbl">CO₂ offset</span><span class="val">1.2 t</span><span class="sub">this month</span><span class="badge">Eco fleet</span></div>
+      <div class="ac ac-solid white"><h3 style="color:#000">Book in 3 seconds.</h3><p>No friction. Just ride.</p></div>
+      <div class="ac ac-map"><div class="pin" style="top:36%;left:55%"></div><span class="pin-lbl">2 min ETA</span></div>
+      <div class="ac ac-route"><div><div class="r-line"><div class="r-dot from"></div> Colosseo</div><div class="r-conn"></div><div class="r-line"><div class="r-dot to"></div> EUR Centro</div></div><div class="r-eta">8 <span>min away</span></div></div>
+      <div class="ac ac-solid dark"><h3>Luxury rides. Fair prices.</h3><p>Transparent pricing, every trip</p></div>
+      <div class="ac ac-stat"><span class="lbl">Rides today</span><span class="val">18,402</span><span class="sub">Rome metro area</span><span class="badge">↑ 8% vs yesterday</span></div>
+      <div class="ac ac-solid blue"><h3>Your driver is ready.</h3><p>Verified. Rated. On time.</p></div>
+      <div class="ac ac-route"><div><div class="r-line"><div class="r-dot from"></div> Trastevere</div><div class="r-conn"></div><div class="r-line"><div class="r-dot to"></div> Termini Station</div></div><div class="r-eta">11 <span>min away</span></div></div>
+      <div class="ac ac-stat"><span class="lbl">Customer score</span><span class="val">98%</span><span class="sub">satisfaction rate</span><span class="badge">Top tier</span></div>
+      <div class="ac ac-solid red"><h3>AI. Speed. Style.</h3><p>The future of urban mobility</p></div>
+      <div class="ac ac-map"><div class="pin" style="top:55%;left:45%"></div><span class="pin-lbl">3 drivers nearby</span></div>
+      <!-- duplicate set for seamless loop -->
       <div class="ac ac-solid blue"><h3>Move faster. Ride smarter.</h3><p>AI-powered routing that thinks ahead</p></div>
       <div class="ac ac-stat"><span class="lbl">Avg ride rating</span><span class="val">4.97</span><span class="sub">across 2.4M trips</span><span class="badge">↑ 0.12 this month</span></div>
       <div class="ac ac-map"><div class="pin"></div><span class="pin-lbl">Live tracking</span></div>
@@ -218,32 +191,11 @@
       <div class="ac ac-stat"><span class="lbl">Customer score</span><span class="val">98%</span><span class="sub">satisfaction rate</span><span class="badge">Top tier</span></div>
       <div class="ac ac-solid red"><h3>AI. Speed. Style.</h3><p>The future of urban mobility</p></div>
       <div class="ac ac-map"><div class="pin" style="top:55%;left:45%"></div><span class="pin-lbl">3 drivers nearby</span></div>
-
-      <!-- ── SET B (duplicate for loop) ─────────────────────────── -->
-      <div class="ac ac-solid blue"><h3>Move faster. Ride smarter.</h3><p>AI-powered routing that thinks ahead</p></div>
-      <div class="ac ac-stat"><span class="lbl">Avg ride rating</span><span class="val">4.97</span><span class="sub">across 2.4M trips</span><span class="badge">↑ 0.12 this month</span></div>
-      <div class="ac ac-map"><div class="pin"></div><span class="pin-lbl">Live tracking</span></div>
-      <div class="ac ac-solid dark"><h3>Zero wait time.</h3><p>Driver matched before you finish booking</p></div>
-      <div class="ac ac-stat"><span class="lbl">Cities active</span><span class="val">38</span><span class="sub">and expanding</span><span class="badge">↑ 5 new this Q</span></div>
-      <div class="ac ac-route"><div><div class="r-line"><div class="r-dot from"></div>Piazza Navona</div><div class="r-conn"></div><div class="r-line"><div class="r-dot to"></div>Fiumicino Airport</div></div><div class="r-eta">22 <span>min away</span></div></div>
-      <div class="ac ac-solid red"><h3>Supercar fleet. Real streets.</h3><p>Performance isn't optional. It's standard.</p></div>
-      <div class="ac ac-stat"><span class="lbl">CO₂ offset</span><span class="val">1.2 t</span><span class="sub">this month</span><span class="badge">Eco fleet</span></div>
-      <div class="ac ac-solid white"><h3 style="color:#000">Book in 3 seconds.</h3><p>No friction. Just ride.</p></div>
-      <div class="ac ac-map"><div class="pin" style="top:36%;left:55%"></div><span class="pin-lbl">2 min ETA</span></div>
-      <div class="ac ac-route"><div><div class="r-line"><div class="r-dot from"></div>Colosseo</div><div class="r-conn"></div><div class="r-line"><div class="r-dot to"></div>EUR Centro</div></div><div class="r-eta">8 <span>min away</span></div></div>
-      <div class="ac ac-solid dark"><h3>Luxury rides. Fair prices.</h3><p>Transparent pricing, every trip</p></div>
-      <div class="ac ac-stat"><span class="lbl">Rides today</span><span class="val">18,402</span><span class="sub">Rome metro area</span><span class="badge">↑ 8% vs yesterday</span></div>
-      <div class="ac ac-solid blue"><h3>Your driver is ready.</h3><p>Verified. Rated. On time.</p></div>
-      <div class="ac ac-route"><div><div class="r-line"><div class="r-dot from"></div>Trastevere</div><div class="r-conn"></div><div class="r-line"><div class="r-dot to"></div>Termini Station</div></div><div class="r-eta">11 <span>min away</span></div></div>
-      <div class="ac ac-stat"><span class="lbl">Customer score</span><span class="val">98%</span><span class="sub">satisfaction rate</span><span class="badge">Top tier</span></div>
-      <div class="ac ac-solid red"><h3>AI. Speed. Style.</h3><p>The future of urban mobility</p></div>
-      <div class="ac ac-map"><div class="pin" style="top:55%;left:45%"></div><span class="pin-lbl">3 drivers nearby</span></div>
-
-    </div><!-- /auth-grid -->
+    </div>
 
     <div class="auth-right-tag">
-      <h2>Start your journey today.</h2>
-      <p>Join thousands of riders across 38 cities.</p>
+      <h2>Start riding smarter.</h2>
+      <p>Join thousands already on the road.</p>
     </div>
 
   </div><!-- /auth-right -->
@@ -251,6 +203,7 @@
 </div><!-- /auth-page -->
 
 <script src="assets/sql-wasm.js"></script>
+<script src="scripts/i18n.js"></script>
 <script src="scripts/auth.js"></script>
 </body>
 </html>

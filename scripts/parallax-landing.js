@@ -331,7 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const navOverlay = document.getElementById("navOverlay");
     const navLinks   = document.querySelectorAll(".nav-link");
 
-    // SVG paths for hamburger and X
     const HAMBURGER_SVG = `
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
@@ -344,20 +343,18 @@ document.addEventListener("DOMContentLoaded", () => {
         <path d="M19 5L5 19" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
       </svg>`;
 
-    let scrollY = 0; // Store scroll position to restore on close
+    let savedScrollY = 0;
 
     function openMenu() {
-      // Lock scroll: save current position, fix body
-      scrollY = window.scrollY;
+      savedScrollY = window.scrollY;
       document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
+      document.body.style.top = `-${savedScrollY}px`;
       document.body.style.width = '100%';
-      document.body.style.overflowY = 'scroll'; // prevent layout shift
+      document.body.style.overflowY = 'scroll';
 
       navOverlay.classList.add("is-open");
       navOverlay.setAttribute("aria-hidden", "false");
 
-      // Change hamburger icon to X
       menuBtn.innerHTML = X_SVG;
       menuBtn.setAttribute("aria-label", "Close menu");
     }
@@ -366,34 +363,48 @@ document.addEventListener("DOMContentLoaded", () => {
       navOverlay.classList.remove("is-open");
       navOverlay.setAttribute("aria-hidden", "true");
 
-      // Restore scroll
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflowY = '';
-      window.scrollTo(0, scrollY);
+      window.scrollTo(0, savedScrollY);
 
-      // Restore hamburger icon
       menuBtn.innerHTML = HAMBURGER_SVG;
       menuBtn.setAttribute("aria-label", "Open menu");
     }
 
-    menuBtn.addEventListener("click", () => {
-      if (navOverlay.classList.contains("is-open")) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    });
+    if (menuBtn) {
+      menuBtn.addEventListener("click", () => {
+        if (navOverlay.classList.contains("is-open")) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+    }
 
-    navClose.addEventListener("click", closeMenu);
+    if (navClose) navClose.addEventListener("click", closeMenu);
 
     navLinks.forEach(link => {
       link.addEventListener("click", (e) => {
+        const href = link.getAttribute('href');
+
+        // HOME link — scroll to top
+        if (link.classList.contains('nav-active') || href === '#' || href === 'index.html') {
+          e.preventDefault();
+          closeMenu();
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }, 50);
+          });
+          return;
+        }
+
+        // Features link with scroll offset
         if (link.dataset.scrollOffset) {
           e.preventDefault();
           closeMenu();
-          // Wait for scroll restoration before scrolling to target
           requestAnimationFrame(() => {
             setTimeout(() => {
               const target = document.getElementById("features-parallax");
@@ -404,20 +415,40 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             }, 50);
           });
-        } else {
-          closeMenu();
+          return;
         }
+
+        // In-page anchor links
+        if (href && href.startsWith('#') && href.length > 1) {
+          e.preventDefault();
+          closeMenu();
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              const target = document.querySelector(href);
+              if (target) {
+                const topbarH = 72;
+                const offset = target.getBoundingClientRect().top + window.scrollY - topbarH;
+                window.scrollTo({ top: offset, behavior: "smooth" });
+              }
+            }, 50);
+          });
+          return;
+        }
+
+        closeMenu();
       });
     });
 
-    // Close on backdrop click (clicking outside the inner panel)
-    navOverlay.addEventListener("click", (e) => {
-      if (e.target === navOverlay) closeMenu();
-    });
+    // Close on backdrop click
+    if (navOverlay) {
+      navOverlay.addEventListener("click", (e) => {
+        if (e.target === navOverlay) closeMenu();
+      });
+    }
 
     // Keyboard escape
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && navOverlay.classList.contains("is-open")) closeMenu();
+      if (e.key === "Escape" && navOverlay && navOverlay.classList.contains("is-open")) closeMenu();
     });
   });
 

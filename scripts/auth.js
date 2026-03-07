@@ -79,6 +79,269 @@ async function initDatabase() {
 
 dbReady = initDatabase();
 
+/* ── LANGUAGE SYSTEM ──────────────────────────────────────────────── */
+
+const i18n = {
+  en: {
+    getStarted: 'Get started',
+    viewPlans: 'View plans',
+    signIn: 'Sign in',
+    createAccount: 'Create account',
+    myRides: 'My rides',
+    fidelityPoints: 'Fidelity points',
+    settings: 'Settings',
+    signOut: 'Sign out',
+    langLabel: 'EN',
+  },
+  it: {
+    getStarted: 'Inizia ora',
+    viewPlans: 'Vedi piani',
+    signIn: 'Accedi',
+    createAccount: 'Crea account',
+    myRides: 'I miei viaggi',
+    fidelityPoints: 'Punti fedeltà',
+    settings: 'Impostazioni',
+    signOut: 'Esci',
+    langLabel: 'IT',
+  }
+};
+
+function getCurrentLang() {
+  return localStorage.getItem('ride_lang') || 'en';
+}
+
+function setLang(lang) {
+  localStorage.setItem('ride_lang', lang);
+}
+
+/* ── INJECT GLOBAL STYLES (modals, language btn, etc.) ───────────── */
+
+function injectGlobalStyles() {
+  if (document.getElementById('ride-auth-global-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'ride-auth-global-styles';
+  style.textContent = `
+    /* ── FORGOT PASSWORD MODAL ──────────────────────────────────── */
+    .forgot-modal-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .forgot-modal-overlay.is-open {
+      opacity: 1; pointer-events: auto;
+    }
+    .forgot-modal {
+      position: relative;
+      width: 100%; max-width: 400px;
+      background: rgba(12,12,16,0.96);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 24px;
+      padding: 40px 36px 36px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+    }
+    .forgot-modal-overlay.is-open .forgot-modal {
+      transform: translateY(0) scale(1);
+    }
+    .forgot-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; color: rgba(255,255,255,0.45);
+      transition: color .2s, background .2s;
+      background: none; border: none; cursor: pointer;
+    }
+    .forgot-close:hover { color: #fff; background: rgba(255,255,255,0.07); }
+    .forgot-close svg { width: 16px; height: 16px; }
+    .forgot-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(43,106,255,0.12);
+      border: 1px solid rgba(43,106,255,0.20);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .forgot-icon svg { width: 24px; height: 24px; stroke: rgba(120,160,255,0.9); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .forgot-modal h2 {
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.04em; margin-bottom: 8px; color: #fff;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+    .forgot-modal p {
+      font-size: 14px; color: rgba(255,255,255,0.52);
+      line-height: 1.6; margin-bottom: 0;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+    .forgot-success-icon {
+      width: 52px; height: 52px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .forgot-success-icon svg { width: 52px; height: 52px; }
+    .forgot-note {
+      margin-top: 12px !important;
+      font-size: 13px !important;
+    }
+    .forgot-link-btn {
+      background: none; border: none; color: rgba(140,175,255,.9);
+      font: inherit; font-size: 13px; cursor: pointer;
+      text-decoration: underline; text-underline-offset: 2px;
+      padding: 0; transition: color .2s;
+    }
+    .forgot-link-btn:hover { color: #fff; }
+
+    /* ── SIGN OUT CONFIRMATION MODAL ────────────────────────────── */
+    .signout-modal-overlay {
+      position: fixed; inset: 0; z-index: 3000;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .signout-modal-overlay.is-open { opacity: 1; pointer-events: auto; }
+    .signout-modal {
+      width: 100%; max-width: 340px;
+      background: rgba(12,12,16,0.97);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(.22,1,.36,1);
+      text-align: center;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+    .signout-modal-overlay.is-open .signout-modal { transform: scale(1); }
+    .signout-modal-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: rgba(232,33,58,0.10);
+      border: 1px solid rgba(232,33,58,0.18);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .signout-modal-icon svg { width: 22px; height: 22px; stroke: rgba(232,80,80,0.9); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .signout-modal h3 {
+      font-size: 17px; font-weight: 700;
+      letter-spacing: -0.03em; color: #fff; margin-bottom: 6px;
+    }
+    .signout-modal p {
+      font-size: 13.5px; color: rgba(255,255,255,0.45); line-height: 1.55; margin-bottom: 22px;
+    }
+    .signout-modal-actions { display: flex; gap: 10px; }
+    .signout-cancel-btn {
+      flex: 1; padding: 11px; border-radius: 11px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: background .2s, color .2s;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+    .signout-cancel-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
+    .signout-confirm-btn {
+      flex: 1; padding: 11px; border-radius: 11px;
+      border: 1px solid rgba(232,33,58,0.30);
+      background: rgba(232,33,58,0.10);
+      color: rgba(255,100,100,0.9); font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background .2s, color .2s;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+    .signout-confirm-btn:hover { background: rgba(232,33,58,0.18); color: #ff7070; }
+
+    /* ── LANGUAGE TOGGLE BUTTON ─────────────────────────────────── */
+    .lang-toggle-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 5px;
+      height: 30px; padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.78);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      font-family: "Inter", system-ui, sans-serif;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .lang-toggle-btn:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.30);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .lang-toggle-btn svg {
+      width: 12px; height: 12px;
+      opacity: 0.65;
+      flex-shrink: 0;
+    }
+
+    /* ── PROFILE BUTTON ICON FIX ────────────────────────────────── */
+    .profile-btn .circle {
+      width: 30px; height: 30px;
+      border: 1.5px solid rgba(255,255,255,0.7);
+      border-radius: 50%;
+      position: relative;
+      overflow: visible;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .profile-btn:hover .circle {
+      transform: scale(1.06);
+      box-shadow: 0 0 16px rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.9);
+    }
+    .profile-btn .circle::before {
+      content: "";
+      position: absolute;
+      top: 5px; left: 50%;
+      transform: translateX(-50%);
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.8);
+    }
+    .profile-btn .circle::after {
+      content: "";
+      position: absolute;
+      bottom: 4px; left: 50%;
+      transform: translateX(-50%);
+      width: 14px; height: 7px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.8);
+      border-bottom: none;
+    }
+    .profile-btn .circle.is-logged-in::before,
+    .profile-btn .circle.is-logged-in::after { display: none; }
+    .profile-btn .circle.is-logged-in {
+      background: linear-gradient(135deg, #3c82ff, #7055ff);
+      font-size: 11px; font-weight: 700; color: #fff;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── TOPBAR RIGHT CLUSTER ───────────────────────────────────── */
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 /* ── STORAGE HELPERS ──────────────────────────────────────────────── */
 
 const Session = {
@@ -239,7 +502,8 @@ function initPasswordToggles() {
 /* ── FORGOT PASSWORD MODAL ────────────────────────────────────────── */
 
 function createForgotPasswordModal() {
-  // Inject modal HTML into body
+  if (document.getElementById('forgotModal')) return document.getElementById('forgotModal');
+
   const modal = document.createElement('div');
   modal.id = 'forgotModal';
   modal.className = 'forgot-modal-overlay';
@@ -299,186 +563,6 @@ function createForgotPasswordModal() {
     </div>
   `;
   document.body.appendChild(modal);
-
-  // Inject modal CSS
-  const style = document.createElement('style');
-  style.textContent = `
-    .forgot-modal-overlay {
-      position: fixed; inset: 0; z-index: 2000;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s cubic-bezier(.4,0,.2,1);
-    }
-    .forgot-modal-overlay.is-open {
-      opacity: 1; pointer-events: auto;
-    }
-    .forgot-modal {
-      position: relative;
-      width: 100%; max-width: 400px;
-      background: rgba(12,12,16,0.96);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 24px;
-      padding: 40px 36px 36px;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
-      transform: translateY(20px) scale(0.97);
-      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
-    }
-    .forgot-modal-overlay.is-open .forgot-modal {
-      transform: translateY(0) scale(1);
-    }
-    .forgot-close {
-      position: absolute; top: 16px; right: 16px;
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 8px; color: rgba(255,255,255,0.45);
-      transition: color .2s, background .2s;
-    }
-    .forgot-close:hover { color: #fff; background: rgba(255,255,255,0.07); }
-    .forgot-close svg { width: 16px; height: 16px; }
-    .forgot-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      background: rgba(43,106,255,0.12);
-      border: 1px solid rgba(43,106,255,0.20);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-    }
-    .forgot-icon svg { width: 24px; height: 24px; stroke: rgba(120,160,255,0.9); }
-    .forgot-modal h2 {
-      font-size: 22px; font-weight: 800;
-      letter-spacing: -0.04em; margin-bottom: 8px; color: #fff;
-    }
-    .forgot-modal p {
-      font-size: 14px; color: rgba(255,255,255,0.52);
-      line-height: 1.6; margin-bottom: 0;
-    }
-    .forgot-success-icon {
-      width: 52px; height: 52px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-    }
-    .forgot-success-icon svg { width: 52px; height: 52px; }
-    .forgot-note {
-      margin-top: 12px !important;
-      font-size: 13px !important;
-    }
-    .forgot-link-btn {
-      background: none; border: none; color: rgba(140,175,255,.9);
-      font: inherit; font-size: 13px; cursor: pointer;
-      text-decoration: underline; text-underline-offset: 2px;
-      padding: 0; transition: color .2s;
-    }
-    .forgot-link-btn:hover { color: #fff; }
-
-    /* ── SIGN OUT CONFIRMATION MODAL ────────────────────────────── */
-    .signout-modal-overlay {
-      position: fixed; inset: 0; z-index: 2000;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .signout-modal-overlay.is-open { opacity: 1; pointer-events: auto; }
-    .signout-modal {
-      width: 100%; max-width: 340px;
-      background: rgba(12,12,16,0.97);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
-      transform: scale(0.95);
-      transition: transform 0.25s cubic-bezier(.22,1,.36,1);
-      text-align: center;
-    }
-    .signout-modal-overlay.is-open .signout-modal { transform: scale(1); }
-    .signout-modal-icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      background: rgba(232,33,58,0.10);
-      border: 1px solid rgba(232,33,58,0.18);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px;
-    }
-    .signout-modal-icon svg { width: 22px; height: 22px; stroke: rgba(232,80,80,0.9); }
-    .signout-modal h3 {
-      font-size: 17px; font-weight: 700;
-      letter-spacing: -0.03em; color: #fff; margin-bottom: 6px;
-    }
-    .signout-modal p {
-      font-size: 13.5px; color: rgba(255,255,255,0.45); line-height: 1.55; margin-bottom: 22px;
-    }
-    .signout-modal-actions { display: flex; gap: 10px; }
-    .signout-cancel-btn {
-      flex: 1; padding: 11px; border-radius: 11px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 500;
-      cursor: pointer; transition: background .2s, color .2s;
-    }
-    .signout-cancel-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
-    .signout-confirm-btn {
-      flex: 1; padding: 11px; border-radius: 11px;
-      border: 1px solid rgba(232,33,58,0.30);
-      background: rgba(232,33,58,0.10);
-      color: rgba(255,100,100,0.9); font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: background .2s, color .2s;
-    }
-    .signout-confirm-btn:hover { background: rgba(232,33,58,0.18); color: #ff7070; }
-
-    /* ── PROFILE BUTTON ICON FIX ────────────────────────────────── */
-    .profile-btn .circle {
-      width: 30px; height: 30px;
-      border: 1.5px solid rgba(255,255,255,0.7);
-      border-radius: 50%;
-      position: relative;
-      overflow: visible;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    }
-    .profile-btn:hover .circle {
-      transform: scale(1.06);
-      box-shadow: 0 0 16px rgba(255,255,255,0.15);
-      border-color: rgba(255,255,255,0.9);
-    }
-    /* Override default ::before/::after from landing.css with cleaner icon */
-    .profile-btn .circle::before {
-      content: "";
-      position: absolute;
-      top: 5px; left: 50%;
-      transform: translateX(-50%);
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: transparent;
-      border: 1.5px solid rgba(255,255,255,0.8);
-    }
-    .profile-btn .circle::after {
-      content: "";
-      position: absolute;
-      bottom: 4px; left: 50%;
-      transform: translateX(-50%);
-      width: 14px; height: 7px;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-      border: 1.5px solid rgba(255,255,255,0.8);
-      border-bottom: none;
-    }
-    .profile-btn .circle.is-logged-in::before,
-    .profile-btn .circle.is-logged-in::after { display: none; }
-    .profile-btn .circle.is-logged-in {
-      background: linear-gradient(135deg, #3c82ff, #7055ff);
-      font-size: 11px; font-weight: 700; color: #fff;
-      letter-spacing: 0.03em;
-    }
-  `;
-  document.head.appendChild(style);
-
   return modal;
 }
 
@@ -499,7 +583,6 @@ function initForgotPassword() {
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    // Reset to step 1
     setTimeout(() => {
       document.getElementById('forgotStep1').style.display = '';
       document.getElementById('forgotStep2').style.display = 'none';
@@ -522,7 +605,6 @@ function initForgotPassword() {
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
 
-  // Retry button
   document.getElementById('forgotRetry').addEventListener('click', () => {
     document.getElementById('forgotStep1').style.display = '';
     document.getElementById('forgotStep2').style.display = 'none';
@@ -530,7 +612,6 @@ function initForgotPassword() {
     if (emailIn) { emailIn.value = ''; emailIn.focus(); fieldOk(emailIn); }
   });
 
-  // Submit
   document.getElementById('forgotSubmit').addEventListener('click', async () => {
     const emailIn = document.getElementById('forgotEmail');
     const submitBtn = document.getElementById('forgotSubmit');
@@ -544,17 +625,12 @@ function initForgotPassword() {
       return;
     }
 
-    // Loading state
     submitBtn.classList.add('is-loading');
     submitBtn.disabled = true;
-
-    // Simulate sending email (always succeeds for demo)
     await new Promise(r => setTimeout(r, 1200));
-
     submitBtn.classList.remove('is-loading');
     submitBtn.disabled = false;
 
-    // Show success step
     const successMsg = document.querySelector('#forgotSuccessMsg strong');
     if (successMsg) successMsg.textContent = emailIn.value.trim();
     document.getElementById('forgotStep1').style.display = 'none';
@@ -565,6 +641,8 @@ function initForgotPassword() {
 /* ── SIGN OUT CONFIRMATION ────────────────────────────────────────── */
 
 function createSignOutModal() {
+  if (document.getElementById('signoutModal')) return document.getElementById('signoutModal');
+
   const modal = document.createElement('div');
   modal.id = 'signoutModal';
   modal.className = 'signout-modal-overlay';
@@ -588,6 +666,36 @@ function createSignOutModal() {
   `;
   document.body.appendChild(modal);
   return modal;
+}
+
+/* ── LANGUAGE TOGGLE ──────────────────────────────────────────────── */
+
+function createLangToggle(container) {
+  const btn = document.createElement('button');
+  btn.className = 'lang-toggle-btn';
+  btn.setAttribute('aria-label', 'Toggle language');
+  btn.setAttribute('id', 'langToggleBtn');
+
+  const lang = getCurrentLang();
+  btn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
+    </svg>
+    <span>${lang.toUpperCase()}</span>
+  `;
+
+  btn.addEventListener('click', () => {
+    const current = getCurrentLang();
+    const next = current === 'en' ? 'it' : 'en';
+    setLang(next);
+    btn.querySelector('span').textContent = next.toUpperCase();
+    // Reload to apply translations
+    window.location.reload();
+  });
+
+  container.appendChild(btn);
+  return btn;
 }
 
 /* ── LOGIN FORM ───────────────────────────────────────────────────── */
@@ -624,7 +732,6 @@ function initLoginForm() {
     window.location.href = redirect;
   });
 
-  // Init forgot password
   initForgotPassword();
 }
 
@@ -687,6 +794,10 @@ async function initTopbarDropdown() {
 
   const user = await Session.get();
 
+  // Wrap profileBtn and its sibling into a cluster div if not already done
+  // Also inject lang toggle for guests into topbar
+  const topbar = document.querySelector(".topbar");
+
   if (user) {
     const circle = profileBtn.querySelector(".circle");
     if (circle) {
@@ -702,10 +813,24 @@ async function initTopbarDropdown() {
     dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "none");
     dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "");
 
+    // Update settings link in dropdown to go to settings.html
+    const settingsLink = dropdown.querySelector('.dd-item[href="#"]');
+    if (settingsLink) {
+      // Find the one with settings icon (3rd item)
+      const allItems = dropdown.querySelectorAll('.dd-item');
+      allItems.forEach(item => {
+        if (item.textContent.trim().includes('Settings') || item.textContent.trim().includes('Impostazioni')) {
+          item.href = 'settings.html';
+        }
+      });
+    }
+
     // Sign out with confirmation modal
     const signoutModal = createSignOutModal();
 
-    dropdown.querySelector(".dd-signout")?.addEventListener("click", () => {
+    dropdown.querySelector(".dd-signout")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       dropdown.classList.remove("is-open");
       signoutModal.classList.add('is-open');
       signoutModal.setAttribute('aria-hidden', 'false');
@@ -729,9 +854,31 @@ async function initTopbarDropdown() {
       }
     });
 
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && signoutModal.classList.contains('is-open')) {
+        signoutModal.classList.remove('is-open');
+        signoutModal.setAttribute('aria-hidden', 'true');
+      }
+    });
+
   } else {
     dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "none");
     dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "");
+
+    // Inject language toggle button for guests in topbar (next to profile btn)
+    if (topbar && profileWrap) {
+      // Wrap in a flex container if not already
+      let cluster = profileWrap.closest('.topbar-right');
+      if (!cluster) {
+        cluster = document.createElement('div');
+        cluster.className = 'topbar-right';
+        profileWrap.parentNode.insertBefore(cluster, profileWrap);
+        cluster.appendChild(profileWrap);
+      }
+      createLangToggle(cluster);
+      // Move lang button before profile wrap
+      cluster.insertBefore(cluster.querySelector('.lang-toggle-btn'), profileWrap);
+    }
   }
 
   profileBtn.addEventListener("click", e => {
@@ -740,7 +887,8 @@ async function initTopbarDropdown() {
   });
 
   document.addEventListener("click", e => {
-    if (profileWrap && !profileWrap.contains(e.target)) {
+    if (profileWrap && !profileWrap.closest('.topbar-right')?.contains(e.target) &&
+        !profileWrap.contains(e.target)) {
       dropdown.classList.remove("is-open");
     }
   });
@@ -763,6 +911,7 @@ function initSocialButtons() {
 /* ── BOOTSTRAP ────────────────────────────────────────────────────── */
 
 document.addEventListener("DOMContentLoaded", async () => {
+  injectGlobalStyles();
   initPasswordToggles();
   initLoginForm();
   initRegisterForm();
