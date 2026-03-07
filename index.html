@@ -64,7 +64,7 @@
   </svg>
 
   <div class="topbar">
-    <button class="menu-btn" aria-label="Open menu">
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="navOverlay">
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
         <path d="M3 12H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
@@ -81,7 +81,7 @@
         <span class="circle"></span>
       </button>
 
-      <!-- ── Profile dropdown — populated by auth.js ── -->
+      <!-- Profile dropdown populated by auth.js -->
       <div class="profile-dropdown" id="profileDropdown" role="menu">
 
         <!-- Logged-in header (hidden for guests) -->

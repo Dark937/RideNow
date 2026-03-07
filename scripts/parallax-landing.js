@@ -348,23 +348,54 @@ document.addEventListener("DOMContentLoaded", () => {
     addTiltEffect(".features-image-card");
 
     // ── Hamburger menu ──────────────────────────────────────────────────
-    const menuBtn   = document.querySelector(".menu-btn");
-    const navClose  = document.getElementById("navClose");
+    const menuBtn = document.querySelector(".menu-btn");
+    const navClose = document.getElementById("navClose");
     const navOverlay = document.getElementById("navOverlay");
-    const navLinks  = document.querySelectorAll(".nav-link");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    if (!menuBtn || !navClose || !navOverlay) return;
+
+    const menuIconPaths = menuBtn.querySelectorAll("path");
+    const defaultMenuIcon = ["M3 6H21", "M3 12H21", "M3 18H21"];
+    const closeMenuIcon = ["M5 5L19 19", "M12 12L12 12", "M19 5L5 19"];
+
+    function syncMenuButton(isOpen) {
+      menuBtn.classList.toggle("is-open", isOpen);
+      menuBtn.setAttribute("aria-expanded", String(isOpen));
+      menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+
+      if (menuIconPaths.length >= 3) {
+        menuIconPaths[0].setAttribute("d", isOpen ? closeMenuIcon[0] : defaultMenuIcon[0]);
+        menuIconPaths[1].setAttribute("d", isOpen ? closeMenuIcon[1] : defaultMenuIcon[1]);
+        menuIconPaths[1].style.opacity = isOpen ? "0" : "1";
+        menuIconPaths[2].setAttribute("d", isOpen ? closeMenuIcon[2] : defaultMenuIcon[2]);
+      }
+    }
 
     function openMenu() {
       navOverlay.classList.add("is-open");
       navOverlay.setAttribute("aria-hidden", "false");
+      syncMenuButton(true);
       document.body.style.overflow = "hidden";
     }
+
     function closeMenu() {
       navOverlay.classList.remove("is-open");
       navOverlay.setAttribute("aria-hidden", "true");
+      syncMenuButton(false);
       document.body.style.overflow = "";
     }
 
-    menuBtn.addEventListener("click", openMenu);
+    syncMenuButton(navOverlay.classList.contains("is-open"));
+
+    menuBtn.addEventListener("click", () => {
+      const isOpen = navOverlay.classList.contains("is-open");
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
     navClose.addEventListener("click", closeMenu);
     navLinks.forEach(link => {
       link.addEventListener("click", (e) => {
@@ -374,11 +405,8 @@ document.addEventListener("DOMContentLoaded", () => {
           closeMenu();
           const target = document.getElementById("features-parallax");
           if (target) {
-            // On mobile, just scroll to section. On desktop, scroll so first panel is centered.
             const topbarH = 72;
-            const offset = window.innerWidth > 1024
-              ? target.getBoundingClientRect().top + window.scrollY - topbarH
-              : target.getBoundingClientRect().top + window.scrollY - topbarH;
+            const offset = target.getBoundingClientRect().top + window.scrollY - topbarH;
             window.scrollTo({ top: offset, behavior: "smooth" });
           }
         } else {
