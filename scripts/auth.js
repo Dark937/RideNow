@@ -467,6 +467,50 @@ async function initTopbarDropdown() {
       circle.classList.add("is-logged-in");
       circle.textContent = user.initials || "R";
     }
+/* ── TOPBAR DROPDOWN (index.html) ─────────────────────────────────── */
+
+async function initTopbarDropdown() {
+  const profileBtn  = document.querySelector(".profile-btn");
+  const profileWrap = document.querySelector(".profile-btn-wrap");
+  const dropdown    = document.getElementById("profileDropdown");
+  if (!profileBtn || !dropdown) return;
+
+  const setOpen = (isOpen) => {
+    dropdown.classList.toggle("is-open", isOpen);
+    profileBtn.setAttribute("aria-expanded", String(isOpen));
+  };
+
+  const closeDropdown = () => setOpen(false);
+
+  // Bind interactions before async auth lookup so menu can always open.
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setOpen(!dropdown.classList.contains("is-open"));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (profileWrap && !profileWrap.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeDropdown();
+  });
+
+  let user = null;
+  try {
+    user = await Session.get();
+  } catch (e) {
+    console.warn("Unable to read user session, loading guest menu.", e);
+  }
+
+  if (user) {
+    const circle = profileBtn.querySelector(".circle");
+    if (circle) {
+      circle.classList.add("is-logged-in");
+      circle.textContent = user.initials || "R";
+    }
 
     // Fill dropdown with user info
     const ddName  = dropdown.querySelector(".dd-name");
@@ -486,10 +530,27 @@ async function initTopbarDropdown() {
   } else {
     dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "none");
     dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "");
+    dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "none");
+    dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "");
+
+    dropdown.querySelector(".dd-signout")?.addEventListener("click", () => {
+      Session.clear();
+      closeDropdown();
+      window.location.reload();
+    });
+
+  } else {
+    dropdown.querySelectorAll("[data-user]").forEach(el => el.style.display = "none");
+    dropdown.querySelectorAll("[data-guest]").forEach(el => el.style.display = "");
 
     dropdown.querySelector(".dd-login")?.addEventListener("click", () => {
       window.location.href = "login.html";
     });
+    dropdown.querySelector(".dd-register")?.addEventListener("click", () => {
+      window.location.href = "register.html";
+    });
+  }
+}
     dropdown.querySelector(".dd-register")?.addEventListener("click", () => {
       window.location.href = "register.html";
     });
@@ -524,4 +585,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (e) {
     console.error("Auth UI init failed:", e);
   }
+});
+  initPasswordToggles();
+  initLoginForm();
+  initRegisterForm();
+  await initTopbarDropdown();
+  initSocialButtons();
 });

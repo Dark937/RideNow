@@ -92,15 +92,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 260);
       }
 
-      // Background stays static — no dynamic bg-1..4 class switching
+      parallaxSection.classList.remove("bg-1", "bg-2", "bg-3", "bg-4");
+      parallaxSection.classList.add(bg);
     }
 
     const featuresLeftInner = document.querySelector(".features-left-inner");
     const featuresLeft      = document.querySelector(".features-left");
     let isFixed = false;
 
-    // Set the section height: exactly N panels × 1vh.
-    // Only applies on desktop (> 1024px) — mobile uses CSS auto height.
+    // Desktop: N panels × 1vh each + 0.4vh exit buffer
+    // ENTRY_BIAS (10vh) must match padding-top on .features-layout in CSS
+    const ENTRY_BIAS = 0.10;
+
     function setSectionHeight() {
       if (!parallaxSection || !featurePanels.length) return;
       if (window.innerWidth <= 1024) {
@@ -108,9 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       const vh = window.innerHeight;
-      // N panels of scroll + a small exit buffer (0.4vh) so fixed fades before next section
-      const totalH = featurePanels.length * vh + Math.round(vh * 0.4);
-      parallaxSection.style.height = totalH + "px";
+      parallaxSection.style.height =
+        (featurePanels.length * vh + Math.round(vh * 0.4)) + "px";
     }
     setSectionHeight();
     window.addEventListener("resize", setSectionHeight);
@@ -131,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateParallaxFeatures() {
       if (!parallaxSection || !featurePanels.length) return;
 
-      // Mobile: CSS handles layout statically
+      // Mobile: CSS handles static layout
       if (window.innerWidth <= 1024) {
         if (isFixed) releaseFixed();
         return;
@@ -140,85 +142,88 @@ document.addEventListener("DOMContentLoaded", () => {
       const vpH     = window.innerHeight;
       const secRect = parallaxSection.getBoundingClientRect();
 
-      // ── Metrics ────────────────────────────────────────────────────────
+      // ── Metrics ──────────────────────────────────────────────────────
       const textH    = featuresLeftInner.offsetHeight;
       const leftRect = featuresLeft.getBoundingClientRect();
       const textTop  = (vpH - textH) / 2;
 
       const containerEl   = parallaxSection.querySelector(".container");
-      const cRect         = containerEl ? containerEl.getBoundingClientRect() : { left: 0, right: window.innerWidth };
-      const midX          = cRect.left + (cRect.right - cRect.left) / 2;
-      const rightX        = midX + 40;
-      const rightW        = cRect.right - rightX;
-      const imgH          = featuresImageCard ? featuresImageCard.offsetHeight : vpH * 0.55;
-      const imgTop        = (vpH - imgH) / 2;
+      const cRect         = containerEl
+        ? containerEl.getBoundingClientRect()
+        : { left: 0, right: window.innerWidth };
+      const midX  = cRect.left + (cRect.right - cRect.left) / 2;
+      const rightX = midX + 40;
+      const rightW = cRect.right - rightX;
+      const imgH   = featuresImageCard ? featuresImageCard.offsetHeight : vpH * 0.55;
+      const imgTop = (vpH - imgH) / 2;
 
-      // ── Thresholds ─────────────────────────────────────────────────────
-      // Enter fixed when section top scrolls past the vertically-centered text position
-      const enterFixed = secRect.top <= textTop;
-      // Exit: start fading when section bottom is at 65% viewport height —
-      // well before the next section's solid background overlaps
+      // ── Thresholds ───────────────────────────────────────────────────
+      // Enter: section top reaches the vertical center of the text block
+      const enterFixed    = secRect.top <= textTop;
+      // Exit: start fading well before the next section arrives (65% vh up)
       const exitThreshold = vpH * 0.65;
       const exitFixed     = secRect.bottom < exitThreshold;
 
       if (enterFixed && !exitFixed) {
         if (!isFixed) {
-          // When re-entering (scroll back up), the elements are either:
-          //   a) still in document flow (first entry) - grab current top
-          //   b) just released from fixed - snap directly to textTop/imgTop
-          // We detect case (b) by checking if position is already 'static'
+          // Snap to current position first, then animate to center
           const isInDocFlow = featuresLeftInner.style.position !== "fixed";
-          const curTop = isInDocFlow
+          const snapTop = isInDocFlow
             ? featuresLeftInner.getBoundingClientRect().top
-            : textTop; // snap directly on re-entry
+            : textTop;
+          const snapImgTop = isInDocFlow && featuresImageCard
+            ? featuresImageCard.getBoundingClientRect().top
+            : imgTop;
 
-          positionFixed(featuresLeftInner, leftRect.left, leftRect.width, curTop);
+          positionFixed(featuresLeftInner, leftRect.left, leftRect.width, snapTop);
           featuresLeftInner.style.transform  = "none";
           featuresLeftInner.style.opacity    = "1";
           featuresLeftInner.style.zIndex     = "15";
-          // Suppress transition on re-entry snap to avoid rubber-band effect
-          featuresLeftInner.style.transition = "opacity 0.3s ease";
+          featuresLeftInner.style.transition = "none";
 
           if (featuresImageFixed) {
-            const curImgTop = isInDocFlow
-              ? (featuresImageCard ? featuresImageCard.getBoundingClientRect().top : imgTop)
-              : imgTop;
-            featuresImageFixed.style.display  = "flex";
-            positionFixed(featuresImageFixed, rightX, rightW, curImgTop);
-            featuresImageFixed.style.opacity  = "1";
-            featuresImageFixed.style.zIndex   = "15";
-            featuresImageFixed.style.transition = "opacity 0.3s ease";
+            featuresImageFixed.style.display    = "flex";
+            positionFixed(featuresImageFixed, rightX, rightW, snapImgTop);
+            featuresImageFixed.style.opacity    = "1";
+            featuresImageFixed.style.zIndex     = "15";
+            featuresImageFixed.style.transition = "none";
           }
           isFixed = true;
 
-          // After paint: animate to centered position
+          // Double rAF: let the browser paint the snap position,
+          // then enable transitions and slide to vertical center
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              featuresLeftInner.style.transition = "top 0.45s cubic-bezier(.4,0,.2,1), opacity 0.3s ease";
+              featuresLeftInner.style.transition =
+                "top 0.45s cubic-bezier(.4,0,.2,1), opacity 0.3s ease";
               featuresLeftInner.style.top = textTop + "px";
               if (featuresImageFixed) {
-                featuresImageFixed.style.transition = "top 0.45s cubic-bezier(.4,0,.2,1), opacity 0.3s ease";
+                featuresImageFixed.style.transition =
+                  "top 0.45s cubic-bezier(.4,0,.2,1), opacity 0.3s ease";
                 featuresImageFixed.style.top = imgTop + "px";
               }
             });
           });
+
         } else {
-          // Keep horizontal position in sync on resize
-          featuresLeftInner.style.left  = leftRect.left + "px";
+          // Already fixed — just keep horizontal in sync on resize
+          featuresLeftInner.style.left = leftRect.left + "px";
           if (featuresImageFixed) {
             featuresImageFixed.style.left  = rightX + "px";
             featuresImageFixed.style.width = rightW + "px";
           }
         }
+
         featuresLeftInner.style.opacity = "1";
         if (featuresImageFixed) featuresImageFixed.style.opacity = "1";
 
       } else if (exitFixed && isFixed) {
-        // Fade out over a 0.4vh window so it disappears cleanly before next section
-        const fadeProgress = Math.min((exitThreshold - secRect.bottom) / (vpH * 0.3), 1);
-        const alpha        = Math.max(1 - fadeProgress, 0);
+        // Smooth fade-out as next section approaches
+        const fadeProgress = Math.min(
+          (exitThreshold - secRect.bottom) / (vpH * 0.3), 1
+        );
+        const alpha = Math.max(1 - fadeProgress, 0);
         featuresLeftInner.style.opacity = alpha;
-        // Keep z-index low (behind sections z-index:30) immediately
         featuresLeftInner.style.zIndex  = "5";
         if (featuresImageFixed) {
           featuresImageFixed.style.opacity = alpha;
@@ -230,26 +235,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isFixed) releaseFixed();
       }
 
-      // ── Active panel: map scroll progress → panel index ───────────────
-      // secRect.top goes from 0 (section at viewport top) to negative as we scroll.
-      // We skip the first ~10vh (CSS padding) before counting panels.
-      const ENTRY_BIAS = vpH * 0.10; // matches the 10vh padding-top on .features-layout
-      const scrolled   = -secRect.top - ENTRY_BIAS;
-      // Distribute scroll evenly: each panel owns (totalH - ENTRY_BIAS*2) / N pixels
-      const scrollPerPanel = vpH; // one full viewport per panel
-      const rawIndex  = scrolled / scrollPerPanel;
-      // Add 0.15 so the FIRST panel doesn't linger: it starts activating right away
-      // but transitions to panel 2 at the normal interval
+      // ── Active panel index ────────────────────────────────────────────
+      // ENTRY_BIAS matches the 10vh padding-top on .features-layout
+      const scrolled   = -secRect.top - ENTRY_BIAS * vpH;
       const panelIndex = Math.max(0, Math.min(
-        Math.floor(rawIndex + 0.08),
+        Math.floor(scrolled / vpH + 0.08),
         featurePanels.length - 1
       ));
       setActiveFeature(panelIndex);
 
-      const totalScroll = Math.max(parallaxSection.offsetHeight - vpH, 1);
+      const totalScroll     = Math.max(parallaxSection.offsetHeight - vpH, 1);
       const sectionProgress = Math.min(Math.max(-secRect.top / totalScroll, 0), 1);
       orbs.forEach((orb, i) => {
-        orb.style.transform = `translate3d(0, ${sectionProgress * (i + 1) * 18}px, 0)`;
+        orb.style.transform =
+          `translate3d(0, ${sectionProgress * (i + 1) * 18}px, 0)`;
       });
     }
 
@@ -376,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
       navOverlay.classList.add("is-open");
       navOverlay.setAttribute("aria-hidden", "false");
       syncMenuButton(true);
+      menuBtn.setAttribute("aria-expanded", "true");
       document.body.style.overflow = "hidden";
     }
 
@@ -387,6 +387,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     syncMenuButton(navOverlay.classList.contains("is-open"));
+
+      menuBtn.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
 
     menuBtn.addEventListener("click", () => {
       const isOpen = navOverlay.classList.contains("is-open");
