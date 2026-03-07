@@ -354,15 +354,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!menuBtn || !navClose || !navOverlay) return;
 
+    const menuIconPaths = menuBtn.querySelectorAll("path");
+    const defaultMenuIcon = ["M3 6H21", "M3 12H21", "M3 18H21"];
+    const closeMenuIcon = ["M5 5L19 19", "M12 12L12 12", "M19 5L5 19"];
+
+    function syncMenuButton(isOpen) {
+      menuBtn.classList.toggle("is-open", isOpen);
+      menuBtn.setAttribute("aria-expanded", String(isOpen));
+      menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+
+      if (menuIconPaths.length >= 3) {
+        menuIconPaths[0].setAttribute("d", isOpen ? closeMenuIcon[0] : defaultMenuIcon[0]);
+        menuIconPaths[1].setAttribute("d", isOpen ? closeMenuIcon[1] : defaultMenuIcon[1]);
+        menuIconPaths[1].style.opacity = isOpen ? "0" : "1";
+        menuIconPaths[2].setAttribute("d", isOpen ? closeMenuIcon[2] : defaultMenuIcon[2]);
+      }
+    }
+
     function openMenu() {
       navOverlay.classList.add("is-open");
       navOverlay.setAttribute("aria-hidden", "false");
+      syncMenuButton(true);
       menuBtn.setAttribute("aria-expanded", "true");
       document.body.style.overflow = "hidden";
     }
+
     function closeMenu() {
       navOverlay.classList.remove("is-open");
       navOverlay.setAttribute("aria-hidden", "true");
+      syncMenuButton(false);
+      document.body.style.overflow = "";
+    }
+
+    syncMenuButton(navOverlay.classList.contains("is-open"));
+
       menuBtn.setAttribute("aria-expanded", "false");
       document.body.style.overflow = "";
     }
