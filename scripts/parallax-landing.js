@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const newAlt   = activePanel.dataset.alt   || "";
       const bg       = activePanel.dataset.bg    || "bg-1";
 
-      // ── Text swap ──────────────────────────────────────────────────────
       featureTitle.classList.add("is-changing");
       featureText.classList.add("is-changing");
       clearTimeout(textSwapTimeout);
@@ -81,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
         featureText.classList.remove("is-changing");
       }, 260);
 
-      // ── Image swap — identical timing to text ─────────────────────────
       if (featuresImageCard && featuresImageEl && newImg) {
         featuresImageCard.classList.add("is-entering");
         clearTimeout(imgSwapTimeout);
@@ -100,8 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const featuresLeft      = document.querySelector(".features-left");
     let isFixed = false;
 
-    // Desktop: N panels × 1vh each + 0.4vh exit buffer
-    // ENTRY_BIAS (10vh) must match padding-top on .features-layout in CSS
     const ENTRY_BIAS = 0.10;
 
     function setSectionHeight() {
@@ -133,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateParallaxFeatures() {
       if (!parallaxSection || !featurePanels.length) return;
 
-      // Mobile: CSS handles static layout
       if (window.innerWidth <= 1024) {
         if (isFixed) releaseFixed();
         return;
@@ -142,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const vpH     = window.innerHeight;
       const secRect = parallaxSection.getBoundingClientRect();
 
-      // ── Metrics ──────────────────────────────────────────────────────
       const textH    = featuresLeftInner.offsetHeight;
       const leftRect = featuresLeft.getBoundingClientRect();
       const textTop  = (vpH - textH) / 2;
@@ -157,16 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const imgH   = featuresImageCard ? featuresImageCard.offsetHeight : vpH * 0.55;
       const imgTop = (vpH - imgH) / 2;
 
-      // ── Thresholds ───────────────────────────────────────────────────
-      // Enter: section top reaches the vertical center of the text block
       const enterFixed    = secRect.top <= textTop;
-      // Exit: start fading well before the next section arrives (65% vh up)
       const exitThreshold = vpH * 0.65;
       const exitFixed     = secRect.bottom < exitThreshold;
 
       if (enterFixed && !exitFixed) {
         if (!isFixed) {
-          // Snap to current position first, then animate to center
           const isInDocFlow = featuresLeftInner.style.position !== "fixed";
           const snapTop = isInDocFlow
             ? featuresLeftInner.getBoundingClientRect().top
@@ -190,8 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           isFixed = true;
 
-          // Double rAF: let the browser paint the snap position,
-          // then enable transitions and slide to vertical center
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               featuresLeftInner.style.transition =
@@ -206,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
         } else {
-          // Already fixed — just keep horizontal in sync on resize
           featuresLeftInner.style.left = leftRect.left + "px";
           if (featuresImageFixed) {
             featuresImageFixed.style.left  = rightX + "px";
@@ -218,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (featuresImageFixed) featuresImageFixed.style.opacity = "1";
 
       } else if (exitFixed && isFixed) {
-        // Smooth fade-out as next section approaches
         const fadeProgress = Math.min(
           (exitThreshold - secRect.bottom) / (vpH * 0.3), 1
         );
@@ -235,8 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isFixed) releaseFixed();
       }
 
-      // ── Active panel index ────────────────────────────────────────────
-      // ENTRY_BIAS matches the 10vh padding-top on .features-layout
       const scrolled   = -secRect.top - ENTRY_BIAS * vpH;
       const panelIndex = Math.max(0, Math.min(
         Math.floor(scrolled / vpH + 0.08),
@@ -279,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", onScrollEffects);
     onScrollEffects();
 
-    // Hero scroll: spline drifts up, content-inner shrinks + fades
+    // Hero scroll
     const splineBg = document.querySelector(".spline-bg");
     const contentInner = document.querySelector(".content-inner");
     const heroEl = document.querySelector(".hero");
@@ -290,14 +274,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const scrollY = window.scrollY;
       const progress = Math.min(scrollY / heroH, 1);
 
-      // Spline: no drift, stays fixed in place
       if (splineBg) {
         splineBg.style.transform = "none";
       }
 
-      // content-inner: scale down + fade + rise as user scrolls
       if (contentInner) {
-        // start at 15% scroll progress, fully gone at 65%
         const t = Math.min(Math.max((progress - 0.28) / 0.42, 0), 1);
         const scale = 1 - t * 0.08;
         const opacity = 1 - t;
@@ -310,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", updateHeroScroll, { passive: true });
     updateHeroScroll();
 
-    // ── Topbar scroll state ─────────────────────────────────────────────
+    // Topbar scroll state
     const topbar = document.querySelector(".topbar");
     function updateTopbar() {
       topbar.classList.toggle("is-scrolled", window.scrollY > 60);
@@ -318,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", updateTopbar, { passive: true });
     updateTopbar();
 
-    // ── Cursor tilt for vehicle cards + feature panels ──────────────────
+    // Cursor tilt
     function addTiltEffect(selector) {
       document.querySelectorAll(selector).forEach(card => {
         let animFrame;
@@ -326,12 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
           cancelAnimationFrame(animFrame);
           animFrame = requestAnimationFrame(() => {
             const rect = card.getBoundingClientRect();
-            // Normalize -0.5 to +0.5 from center of element
             const x = ((e.clientX - rect.left) / rect.width)  - 0.5;
             const y = ((e.clientY - rect.top)  / rect.height) - 0.5;
             const tiltX = y * -9;
             const tiltY = x *  9;
-            // perspective() must be first in the transform string
             card.style.transition = "transform 0.12s ease, box-shadow 0.2s ease";
             card.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.03,1.03,1.03)`;
           });
@@ -346,66 +325,106 @@ document.addEventListener("DOMContentLoaded", () => {
     addTiltEffect(".vehicle-card");
     addTiltEffect(".features-image-card");
 
-    // ── Hamburger menu ──────────────────────────────────────────────────
-    const menuBtn   = document.querySelector(".menu-btn");
-    const navClose  = document.getElementById("navClose");
+    // ── HAMBURGER MENU ──────────────────────────────────────────────────
+    const menuBtn    = document.querySelector(".menu-btn");
+    const navClose   = document.getElementById("navClose");
     const navOverlay = document.getElementById("navOverlay");
-    const navLinks  = document.querySelectorAll(".nav-link");
+    const navLinks   = document.querySelectorAll(".nav-link");
+
+    // SVG paths for hamburger and X
+    const HAMBURGER_SVG = `
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 12H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 18H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`;
+    const X_SVG = `
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M5 5L19 19" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M19 5L5 19" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`;
+
+    let scrollY = 0; // Store scroll position to restore on close
 
     function openMenu() {
+      // Lock scroll: save current position, fix body
+      scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflowY = 'scroll'; // prevent layout shift
+
       navOverlay.classList.add("is-open");
       navOverlay.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
+
+      // Change hamburger icon to X
+      menuBtn.innerHTML = X_SVG;
+      menuBtn.setAttribute("aria-label", "Close menu");
     }
+
     function closeMenu() {
       navOverlay.classList.remove("is-open");
       navOverlay.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+
+      // Restore scroll
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
+      window.scrollTo(0, scrollY);
+
+      // Restore hamburger icon
+      menuBtn.innerHTML = HAMBURGER_SVG;
+      menuBtn.setAttribute("aria-label", "Open menu");
     }
 
-    menuBtn.addEventListener("click", openMenu);
+    menuBtn.addEventListener("click", () => {
+      if (navOverlay.classList.contains("is-open")) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
     navClose.addEventListener("click", closeMenu);
+
     navLinks.forEach(link => {
       link.addEventListener("click", (e) => {
-        // Features link: scroll to first image panel, not section top
         if (link.dataset.scrollOffset) {
           e.preventDefault();
           closeMenu();
-          const target = document.getElementById("features-parallax");
-          if (target) {
-            // On mobile, just scroll to section. On desktop, scroll so first panel is centered.
-            const topbarH = 72;
-            const offset = window.innerWidth > 1024
-              ? target.getBoundingClientRect().top + window.scrollY - topbarH
-              : target.getBoundingClientRect().top + window.scrollY - topbarH;
-            window.scrollTo({ top: offset, behavior: "smooth" });
-          }
+          // Wait for scroll restoration before scrolling to target
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              const target = document.getElementById("features-parallax");
+              if (target) {
+                const topbarH = 72;
+                const offset = target.getBoundingClientRect().top + window.scrollY - topbarH;
+                window.scrollTo({ top: offset, behavior: "smooth" });
+              }
+            }, 50);
+          });
         } else {
           closeMenu();
         }
       });
     });
 
-    // Close on backdrop click
+    // Close on backdrop click (clicking outside the inner panel)
     navOverlay.addEventListener("click", (e) => {
       if (e.target === navOverlay) closeMenu();
     });
 
     // Keyboard escape
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeMenu();
+      if (e.key === "Escape" && navOverlay.classList.contains("is-open")) closeMenu();
     });
   });
 
   // ── iOS 26 Liquid Glass: canvas-based displacement maps ─────────────
-  // Generates physically-accurate edge refraction using SDF (Signed Distance
-  // Function) for rounded rectangles — same math Apple's engine uses.
-  // Pixels near the curved edge get outward displacement (R>128, G>128),
-  // center stays neutral (R=128, G=128). Result replaces the static SVG maps.
   (function buildLiquidGlassMaps() {
 
     function roundedRectSDF(px, py, w, h, r) {
-      // Distance from point (px,py) to surface of rounded rect centered at origin
       const qx = Math.abs(px) - w * 0.5 + r;
       const qy = Math.abs(py) - h * 0.5 + r;
       return Math.sqrt(Math.max(qx,0)**2 + Math.max(qy,0)**2) +
@@ -426,20 +445,15 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
           const i  = (y * w + x) * 4;
-          // SDF: positive = outside, negative = inside
           const dist = roundedRectSDF(x - cx, y - cy, w, h, r);
-          // Edge band: dist in [-edgeBand, 0] near inner edge
           const t = Math.max(0, Math.min(1, (-dist) / edgeBand));
-          // Smooth step
           const s = t * t * (3 - 2 * t);
-          // Normal vector pointing from edge outward (away from center)
           const nx = (x - cx) / (Math.abs(x - cx) + 0.001);
           const ny = (y - cy) / (Math.abs(y - cy) + 0.001);
-          // Encode: 128 = neutral, > 128 = push in that direction
           const rx_ = Math.round(128 + nx * s * strength);
           const ry_ = Math.round(128 + ny * s * strength);
-          d[i    ] = Math.max(0, Math.min(255, rx_)); // R → X
-          d[i + 1] = Math.max(0, Math.min(255, ry_)); // G → Y
+          d[i    ] = Math.max(0, Math.min(255, rx_));
+          d[i + 1] = Math.max(0, Math.min(255, ry_));
           d[i + 2] = 128;
           d[i + 3] = 255;
         }
@@ -448,7 +462,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return canvas.toDataURL("image/png");
     }
 
-    // Update feImage href with canvas-generated maps
     function patchFilter(filterId, dataUrl) {
       const filter = document.getElementById(filterId);
       if (!filter) return;
@@ -456,29 +469,24 @@ document.addEventListener("DOMContentLoaded", () => {
       if (feImg) feImg.setAttribute("href", dataUrl);
     }
 
-    // Build maps and patch filters
-    // Card: 400x400, borderRadius ~28px, edgeBand 48px, strength 60
     const cardCanvas = document.createElement("canvas");
     cardCanvas.id = "_lgCardCanvas";
     document.body.appendChild(cardCanvas);
     const cardUrl = buildMap("_lgCardCanvas", 400, 400, 28, 28, 52, 62);
     if (cardUrl) patchFilter("lg-card-filter", cardUrl);
 
-    // Button: 300x100, borderRadius 50 (pill), edgeBand 28px, strength 44
     const btnCanvas = document.createElement("canvas");
     btnCanvas.id = "_lgBtnCanvas";
     document.body.appendChild(btnCanvas);
     const btnUrl = buildMap("_lgBtnCanvas", 300, 100, 50, 50, 28, 44);
     if (btnUrl) patchFilter("lg-btn-filter", btnUrl);
 
-    // Topbar: 800x60, borderRadius 0, edgeBand 14px, strength 20
     const barCanvas = document.createElement("canvas");
     barCanvas.id = "_lgBarCanvas";
     document.body.appendChild(barCanvas);
     const barUrl = buildMap("_lgBarCanvas", 800, 60, 0, 0, 14, 22);
     if (barUrl) patchFilter("lg-bar-filter", barUrl);
 
-    // Cleanup hidden canvases
     [cardCanvas, btnCanvas, barCanvas].forEach(c => {
       c.style.cssText = "position:absolute;width:0;height:0;pointer-events:none;opacity:0";
     });

@@ -105,7 +105,7 @@
 
         <!-- Forgot password -->
         <div class="auth-forgot">
-          <a href="#">Forgot password?</a>
+          <a href="#" id="forgotLink">Forgot password?</a>
         </div>
 
         <!-- Submit -->
@@ -139,15 +139,9 @@
 
     <div class="auth-glow"></div>
 
-    <!--
-      Grid of decorative cards, duplicated for seamless infinite scroll.
-      Cards use short class prefix "ac" to keep markup readable.
-    -->
     <div class="auth-grid">
 
-      <!-- ── ROW SET A (first copy) ───────────────────────────────── -->
-
-      <!-- Column 1 -->
+      <!-- ── ROW SET A ───────────────────────────────── -->
       <div class="ac ac-solid blue">
         <h3>Move faster. Ride smarter.</h3>
         <p>AI-powered routing that thinks ahead</p>
@@ -180,8 +174,6 @@
         </div>
         <div class="r-eta">22 <span>min away</span></div>
       </div>
-
-      <!-- Column 2 -->
       <div class="ac ac-solid red">
         <h3>Supercar fleet. Real streets.</h3>
         <p>Performance isn't optional. It's standard.</p>
@@ -212,8 +204,6 @@
         <h3>Luxury rides. Fair prices.</h3>
         <p>Transparent pricing, every trip</p>
       </div>
-
-      <!-- Column 3 -->
       <div class="ac ac-stat">
         <span class="lbl">Rides today</span>
         <span class="val">18,402</span>
@@ -247,8 +237,7 @@
         <span class="pin-lbl">3 drivers nearby</span>
       </div>
 
-      <!-- ── ROW SET B (exact duplicate for seamless loop) ───────── -->
-
+      <!-- ── ROW SET B (duplicate for loop) ───────── -->
       <div class="ac ac-solid blue"><h3>Move faster. Ride smarter.</h3><p>AI-powered routing that thinks ahead</p></div>
       <div class="ac ac-stat"><span class="lbl">Avg ride rating</span><span class="val">4.97</span><span class="sub">across 2.4M trips</span><span class="badge">↑ 0.12 this month</span></div>
       <div class="ac ac-map"><div class="pin"></div><span class="pin-lbl">Live tracking</span></div>
@@ -270,7 +259,6 @@
 
     </div><!-- /auth-grid -->
 
-    <!-- Brand tagline bottom-right -->
     <div class="auth-right-tag">
       <h2>The ride you deserve.</h2>
       <p>Every trip, engineered before it begins.</p>
