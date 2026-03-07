@@ -63,7 +63,7 @@
   </svg>
 
   <div class="topbar">
-    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="navOverlay">
+    <button class="menu-btn" aria-label="Open menu">
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
         <path d="M3 12H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
@@ -80,13 +80,6 @@
         <span class="circle"></span>
       </button>
 
-      <!-- Profile dropdown populated by auth.js -->
-      <div class="profile-dropdown" id="profileDropdown" role="menu">
-
-        <!-- Logged-in header (hidden for guests) -->
-        <div class="dd-header" data-user>
-          <div class="dd-name">—</div>
-          <div class="dd-email">—</div>
       <div id="profileDropdown" role="menu">
         <!-- Logged-in state -->
         <div data-user style="display:none">
@@ -544,78 +537,5 @@ Your driver arrives on time, in the right car, on the optimized path. No frictio
 <script src="scripts/parallax-landing.js" defer></script>
 <script src="assets/sql-wasm.js" defer></script>
 <script src="scripts/auth.js" defer></script>
-<script>
-(function () {
-  function init() {
-    var btn = document.getElementById('profileBtn');
-    var dd  = document.getElementById('profileDropdown');
-    var out = document.getElementById('ddSignOut');
-    if (!btn || !dd) return;
-
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var open = dd.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', String(open));
-    });
-
-    document.addEventListener('click', function (e) {
-      if (!dd.contains(e.target) && e.target !== btn) {
-        dd.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        dd.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    if (out) {
-      out.addEventListener('click', function () {
-        try { if (window.Session) window.Session.clear(); } catch(e) {}
-        localStorage.removeItem('current_user_id');
-        location.reload();
-      });
-    }
-
-    function updateState() {
-      var userId  = localStorage.getItem('current_user_id');
-      var userEl  = dd.querySelector('[data-user]');
-      var guestEl = dd.querySelector('[data-guest]');
-      var circle  = btn.querySelector('.circle');
-
-      if (userId && window.__rideCurrentUser) {
-        var u = window.__rideCurrentUser;
-        if (userEl)  userEl.style.display  = '';
-        if (guestEl) guestEl.style.display = 'none';
-        var nameEl  = dd.querySelector('.dd-name');
-        var emailEl = dd.querySelector('.dd-email');
-        if (nameEl)  nameEl.textContent  = u.firstName + ' ' + u.lastName;
-        if (emailEl) emailEl.textContent = u.email;
-        if (circle) {
-          circle.textContent = u.initials || (u.firstName[0] + u.lastName[0]);
-          circle.classList.add('is-logged-in');
-        }
-      } else {
-        if (userEl)  userEl.style.display  = 'none';
-        if (guestEl) guestEl.style.display = '';
-        if (circle)  circle.classList.remove('is-logged-in');
-      }
-    }
-
-    updateState();
-    window.addEventListener('ride:authReady', updateState);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-}());
-</script>
-
 </body>
 </html>
