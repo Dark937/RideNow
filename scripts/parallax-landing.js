@@ -83,10 +83,6 @@
     }
 
     const featuresLeftInner = document.querySelector(".features-left-inner");
-    const featuresLeft = document.querySelector(".features-left");
-
-    // Track fixed state to avoid jump on transition
-    let isFixed = false;
 
     function updateParallaxFeatures() {
       if (!parallaxSection || !featurePanels.length) return;
@@ -97,69 +93,18 @@
           panel.classList.toggle("active", i === 0);
           panel.classList.remove("passed");
         });
-        if (featuresLeftInner) {
-          featuresLeftInner.classList.remove("is-fixed", "is-fading");
-          featuresLeftInner.style.cssText = "";
-        }
-        isFixed = false;
         return;
       }
 
       const vpH = window.innerHeight;
       const secRect = parallaxSection.getBoundingClientRect();
-      const innerH = featuresLeftInner.offsetHeight;
-      const leftRect = featuresLeft.getBoundingClientRect();
+      const stickyTop = featuresLeftInner
+        ? parseFloat(getComputedStyle(featuresLeftInner).top) || 0
+        : 0;
+      const innerH = featuresLeftInner ? featuresLeftInner.offsetHeight : 0;
 
-      // The vertical center where the text block will sit when fixed
-      const fixedTop = (vpH - innerH) / 2;
-
-      // Enter fixed: when section top scrolls past where text would sit
-      const enterFixed = secRect.top <= fixedTop;
-      // Exit fixed: when section bottom is about to go above where text ends
-      // Add a generous buffer (innerH * 1.5) so text fades out BEFORE it disappears
-      const exitFixed = secRect.bottom < fixedTop + innerH + innerH * 0.2;
-
-      if (enterFixed && !exitFixed) {
-        // ── FIXED: text stays centered in viewport ──
-        if (!isFixed) {
-          // Capture exact current position before switching to fixed, prevents jump
-          const currentTop = featuresLeftInner.getBoundingClientRect().top;
-          featuresLeftInner.style.position = "fixed";
-          featuresLeftInner.style.top = currentTop + "px";
-          featuresLeftInner.style.left = leftRect.left + "px";
-          featuresLeftInner.style.width = featuresLeft.offsetWidth + "px";
-          featuresLeftInner.style.transform = "none";
-          featuresLeftInner.style.opacity = "1";
-          isFixed = true;
-          // Animate to center position smoothly
-          requestAnimationFrame(() => {
-            featuresLeftInner.style.transition = "top 0.5s cubic-bezier(.4,0,.2,1)";
-            featuresLeftInner.style.top = fixedTop + "px";
-          });
-        } else {
-          // Already fixed: keep left in sync (resize safety)
-          featuresLeftInner.style.left = leftRect.left + "px";
-        }
-        featuresLeftInner.style.opacity = "1";
-        featuresLeftInner.classList.remove("is-fading");
-
-      } else if (exitFixed && isFixed) {
-        // ── FADING OUT: section ending, fade text before it snaps away ──
-        // How far past the exit threshold are we? 0 = just entered, 1 = fully past
-        const fadeProgress = Math.min((fixedTop + innerH + innerH * 0.2 - secRect.bottom) / (innerH * 0.5), 1);
-        featuresLeftInner.style.opacity = Math.max(1 - fadeProgress * 1.4, 0);
-
-      } else if (!enterFixed) {
-        // ── BEFORE SECTION: reset to normal flow ──
-        if (isFixed) {
-          featuresLeftInner.style.cssText = "";
-          isFixed = false;
-        }
-      }
-
-      // ── Active panel: change text when panel CENTER hits fixed text center ──
-      // The text block sits at fixedTop (viewport coords), panel center must match
-      const textCenterY = fixedTop + innerH / 2;
+      // ── Active panel: change text when panel CENTER hits sticky text center ──
+      const textCenterY = stickyTop + innerH / 2;
       let activeIndex = 0;
       let closestDistance = Infinity;
 
