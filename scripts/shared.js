@@ -813,3 +813,11 @@ function fieldOk(el) {
   }
 })();
 Motion.apply();
+/* ── CLEAN URLS (remove .html from address bar) ─────────────────── */
+(function() {
+  const path = window.location.pathname;
+  if (path.endsWith('.html')) {
+    const clean = path.slice(0, -5) || '/';
+    history.replaceState(null, '', clean + window.location.search + window.location.hash);
+  }
+})();

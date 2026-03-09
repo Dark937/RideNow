@@ -140,7 +140,7 @@
           <!-- RIGHT COLUMN: personal info card -->
           <div class="card">
             <div class="card-title" data-i18n="personalInfo">Personal information</div>
-            <div class="card-sub">Your name, email and contact details.</div>
+            <div class="card-sub" data-i18n="updateNameContact">Your name, email and contact details.</div>
             <div class="form-grid">
               <div class="field">
                 <label data-i18n="firstName">First name</label>
@@ -184,7 +184,7 @@
 
         <div class="card card-danger card-full">
           <div class="card-title danger-title" data-i18n="dangerZone">Danger zone</div>
-          <div class="card-sub" style="margin-bottom:16px">Permanently delete your account and all associated data.</div>
+          <div class="card-sub" style="margin-bottom:16px" data-i18n="dangerDesc">Permanently delete your account and all associated data.</div>
           <div class="card-actions">
             <button class="btn-danger" id="deleteAccountBtn" data-i18n="deleteAccount">Delete account</button>
           </div>
@@ -239,15 +239,15 @@
           <div class="card-title">Two-factor authentication</div>
           <div class="tog-row last">
             <div class="tog-info">
-              <div class="tog-label">Authenticator app (TOTP)</div>
-              <div class="tog-desc">Require a time-based code when signing in from a new device.</div>
+              <div class="tog-label" data-i18n="totpLabel">Authenticator app (TOTP)</div>
+              <div class="tog-desc" data-i18n="totpDesc">Require a time-based code when signing in from a new device.</div>
             </div>
             <label class="switch"><input type="checkbox" id="twoFaToggle"><span class="track"></span></label>
           </div>
           <div class="tog-row last" style="margin-top:0">
             <div class="tog-info">
               <div class="tog-label">Login activity alerts</div>
-              <div class="tog-desc">Send an email when a new sign-in is detected.</div>
+              <div class="tog-desc" data-i18n="loginAlertDesc">Send an email when a new sign-in is detected.</div>
             </div>
             <label class="switch"><input type="checkbox" id="loginNotifToggle" checked><span class="track"></span></label>
           </div>
@@ -256,7 +256,7 @@
         </div><!-- /.cards-2col -->
         <div class="card card-full">
           <div class="card-title" data-i18n="activeSessions">Active sessions</div>
-          <div class="card-sub">Devices currently signed in to your account.</div>
+          <div class="card-sub" data-i18n="sessionDesc">Devices currently signed in to your account.</div>
           <div class="sessions-list" id="sessionsContainer"></div>
         </div>
       </section>
@@ -271,7 +271,7 @@
         <div class="cards-2col">
         <div class="card">
           <div class="card-title" data-i18n="language">Language</div>
-          <div class="card-sub">Choose the language displayed across all Ride pages.</div>
+          <div class="card-sub" data-i18n="langDesc">Choose the language displayed across all Ride pages.</div>
           <div class="lang-grid" id="langGrid">
             <div class="lang-card sel" data-lang="en"><span class="lf">🇬🇧</span><div class="li"><div class="ln">English</div><div class="lc">EN</div></div><div class="lchk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div></div>
             <div class="lang-card" data-lang="it"><span class="lf">🇮🇹</span><div class="li"><div class="ln">Italiano</div><div class="lc">IT</div></div><div class="lchk"><svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg></div></div>
@@ -321,7 +321,7 @@
 
         <div class="card">
           <div class="card-title" data-i18n="paymentMethods">Payment methods</div>
-          <div class="card-sub">Add or remove cards from your account.</div>
+          <div class="card-sub" data-i18n="paymentDesc">Add or remove cards from your account.</div>
           <div class="cards-list" id="cardsList"></div>
           <button class="btn-add" id="addCardToggle">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -351,7 +351,7 @@
 
         <div class="card">
           <div class="card-title" data-i18n="transactionHistory">Transaction history</div>
-          <div class="card-sub">Your recent rides and charges.</div>
+          <div class="card-sub" data-i18n="transactionDesc">Your recent rides and charges.</div>
           <div class="table-wrap">
             <table class="hist-table">
               <thead><tr><th>Description</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
@@ -372,15 +372,15 @@
           <div class="card-title" data-i18n="rideUpdates">Ride updates</div>
           <div class="tog-grid">
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label" data-i18n="pushNotifications">Push notifications</div><div class="tog-desc">Driver arrival, route changes and trip completion.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="pushNotifications">Push notifications</div><div class="tog-desc" data-i18n="pushDesc">Driver arrival, route changes and trip completion.</div></div>
             <label class="switch"><input type="checkbox" id="nPush" checked><span class="track"></span></label>
           </div>
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label" data-i18n="smsNotifications">SMS notifications</div><div class="tog-desc">Text updates for driver ETA and pickup.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="smsNotifications">SMS notifications</div><div class="tog-desc" data-i18n="smsDesc">Text updates for driver ETA and pickup.</div></div>
             <label class="switch"><input type="checkbox" id="nSms" checked><span class="track"></span></label>
           </div>
           <div class="tog-row last">
-            <div class="tog-info"><div class="tog-label">Ride reminders</div><div class="tog-desc">Reminder 30 minutes before a scheduled ride.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="remindersLabel">Ride reminders</div><div class="tog-desc" data-i18n="remindersDesc">Reminder 30 minutes before a scheduled ride.</div></div>
             <label class="switch"><input type="checkbox" id="nRideReminders" checked><span class="track"></span></label>
           </div>
           </div>
@@ -390,15 +390,15 @@
           <div class="card-title">Email</div>
           <div class="tog-grid">
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label" data-i18n="rideReceipts">Ride receipts</div><div class="tog-desc">Full breakdown emailed after every trip.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="rideReceipts">Ride receipts</div><div class="tog-desc" data-i18n="receiptDesc">Full breakdown emailed after every trip.</div></div>
             <label class="switch"><input type="checkbox" id="nReceipts" checked><span class="track"></span></label>
           </div>
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label" data-i18n="accountUpdates">Account updates</div><div class="tog-desc">Security alerts and important account changes.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="accountUpdates">Account updates</div><div class="tog-desc" data-i18n="accountUpdateDesc">Security alerts and important account changes.</div></div>
             <label class="switch"><input type="checkbox" id="nAccount" checked><span class="track"></span></label>
           </div>
           <div class="tog-row last">
-            <div class="tog-info"><div class="tog-label" data-i18n="promotionalOffers">Promotional offers</div><div class="tog-desc">Exclusive discounts and seasonal events.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="promotionalOffers">Promotional offers</div><div class="tog-desc" data-i18n="promoDesc">Exclusive discounts and seasonal events.</div></div>
             <label class="switch"><input type="checkbox" id="nPromo"><span class="track"></span></label>
           </div>
           </div>
@@ -418,30 +418,30 @@
 
         <div class="cards-2col">
         <div class="card">
-          <div class="card-title">Data usage</div>
+          <div class="card-title" data-i18n="dataUsageTitle">Data usage</div>
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label">Share ride data with partners</div><div class="tog-desc">Allow anonymised trip data to be shared with transportation partners.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="shareLabel">Share ride data with partners</div><div class="tog-desc" data-i18n="shareDesc">Allow anonymised trip data to be shared with transportation partners.</div></div>
             <label class="switch"><input type="checkbox" id="privShare"><span class="track"></span></label>
           </div>
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label">Personalised marketing</div><div class="tog-desc">Allow Ride to use your data for personalised offers and ads.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="marketingLabel">Personalised marketing</div><div class="tog-desc" data-i18n="marketingDesc">Allow Ride to use your data for personalised offers and ads.</div></div>
             <label class="switch"><input type="checkbox" id="privMarketing"><span class="track"></span></label>
           </div>
           <div class="tog-row">
-            <div class="tog-info"><div class="tog-label">Analytics &amp; performance data</div><div class="tog-desc">Help improve Ride by sharing anonymous usage metrics.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="analyticsLabel">Analytics &amp; performance data</div><div class="tog-desc" data-i18n="analyticsDesc">Help improve Ride by sharing anonymous usage metrics.</div></div>
             <label class="switch"><input type="checkbox" id="privAnalytics" checked><span class="track"></span></label>
           </div>
           <div class="tog-row last">
-            <div class="tog-info"><div class="tog-label">Precise location</div><div class="tog-desc">Use your exact GPS location for better pickup accuracy.</div></div>
+            <div class="tog-info"><div class="tog-label" data-i18n="locationLabel">Precise location</div><div class="tog-desc" data-i18n="locationDesc">Use your exact GPS location for better pickup accuracy.</div></div>
             <label class="switch"><input type="checkbox" id="privLocation" checked><span class="track"></span></label>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">Your data</div>
+          <div class="card-title" data-i18n="yourDataTitle">Your data</div>
           <div class="card-sub" style="margin-bottom:16px">You can request a full export of your personal data at any time. We'll email it to you within 48 hours.</div>
           <div class="card-actions">
-            <button class="btn-ghost" id="exportDataBtn">Request data export</button>
+            <button class="btn-ghost" id="exportDataBtn" data-i18n="exportDataBtn">Request data export</button>
           </div>
         </div>
 
