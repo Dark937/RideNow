@@ -23,7 +23,7 @@ const dbReady = (async () => {
         city TEXT, country TEXT, birthday TEXT
       )
     `);
-    ["phone","city","country","birthday"].forEach(col => {
+    ["photo","phone","city","country","birthday"].forEach(col => {
       try { db.run("ALTER TABLE users ADD COLUMN " + col + " TEXT"); } catch(_){}
     });
     await _idbSave();
@@ -146,50 +146,41 @@ const Session = {
 };
 
 /* ── MOCK AUTH ────────────────────────────────────────────────────── */
-const MockAuth = {
-  register({ firstName, lastName, email, password }) {
-    return new Promise(resolve =>
-      setTimeout(async () => {
-        await dbReady;
-        try {
-          if (!db) { resolve({ ok:false, error:"Database not available." }); return; }
-          const chk = db.prepare("SELECT id FROM users WHERE email = ?");
-          const row = chk.getAsObject([email]); chk.free();
-          if (row && row.id) { resolve({ ok:false, error:"Email already registered." }); return; }
-          const id = crypto?.randomUUID?.() || Date.now().toString(36)+Math.random().toString(36).slice(2);
-          const user = { id, firstName, lastName, email, password,
-            initials: ((firstName[0]||"")+(lastName[0]||"")).toUpperCase(),
-            createdAt: new Date().toISOString() };
-          const s = db.prepare(`INSERT INTO users
-            (id,firstName,lastName,email,password,initials,createdAt,photo,phone,city,country,birthday)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`);
-          s.run([user.id,user.firstName,user.lastName,user.email,user.password,
-                 user.initials,user.createdAt,null,null,null,null,null]); s.free();
-          await _idbSave();
-          localStorage.setItem("current_user_id", user.id);
-          const safe = {...user}; delete safe.password;
-          resolve({ ok:true, user:safe });
-        } catch(e) { resolve({ ok:false, error:"Registration failed: "+e.message }); }
-      }, 900)
-    );
+const Auth = {
+  async register({ firstName, lastName, email, password }) {
+    try {
+      const response = await fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { ok: false, error: data.error };
+      }
+      localStorage.setItem('auth_token', data.token);
+      return { ok: true, user: data.user };
+    } catch (error) {
+      return { ok: false, error: 'Registration failed.' };
+    }
   },
 
-  login({ email, password }) {
-    return new Promise(resolve =>
-      setTimeout(async () => {
-        await dbReady;
-        try {
-          if (!db) { resolve({ ok:false, error:"Database not available." }); return; }
-          const s = db.prepare("SELECT * FROM users WHERE email = ?");
-          const u = s.getAsObject([email]); s.free();
-          if (!u || !u.id) { resolve({ ok:false, error:"Invalid email or password." }); return; }
-          if (u.password !== password) { resolve({ ok:false, error:"Invalid email or password." }); return; }
-          localStorage.setItem("current_user_id", u.id);
-          const safe = {...u}; delete safe.password;
-          resolve({ ok:true, user:safe });
-        } catch(e) { resolve({ ok:false, error:"Login failed: "+e.message }); }
-      }, 900)
-    );
+  async login({ email, password }) {
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { ok: false, error: data.error };
+      }
+      localStorage.setItem('auth_token', data.token);
+      return { ok: true, user: data.user };
+    } catch (error) {
+      return { ok: false, error: 'Login failed.' };
+    }
   }
 };
 

@@ -215,7 +215,7 @@ function initLoginForm() {
     if (!valid) return;
 
     setLoading(true);
-    const result = await MockAuth.login({ email: emailIn.value.trim(), password: passIn.value });
+    const result = await Auth.login({ email: emailIn.value.trim(), password: passIn.value });
     setLoading(false);
 
     if (!result.ok) { showBanner(result.error); return; }
@@ -265,7 +265,7 @@ function initRegisterForm() {
     if (!valid) return;
 
     setLoading(true);
-    const result = await MockAuth.register({
+    const result = await Auth.register({
       firstName: firstIn.value.trim(),
       lastName:  lastIn.value.trim(),
       email:     emailIn.value.trim(),
