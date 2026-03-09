@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'; // Change this in production
 
 // Middleware
 app.use(cors({

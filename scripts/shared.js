@@ -147,100 +147,44 @@ const Session = {
 
 /* ── MOCK AUTH ────────────────────────────────────────────────────── */
 const Auth = {
+  getApiBase() {
+    return `${window.location.protocol}//${window.location.hostname}:3000`;
+  },
+
   async register({ firstName, lastName, email, password }) {
     try {
-      await dbReady;
-      if (!db) throw new Error("Database not ready");
-
-      // Check if user already exists
-      const existing = db.prepare("SELECT id FROM users WHERE email = ?");
-      const exists = existing.getAsObject([email]);
-      existing.free();
-      
-      if (exists) {
-        return { ok: false, error: 'User already exists.' };
+      const response = await fetch(`${this.getApiBase()}/api/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { ok: false, error: data.error };
       }
-
-      // Hash password (simple hash for demo - in production use proper hashing)
-      const hashedPassword = await this.hashPassword(password);
-      
-      // Create user
-      const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      const user = {
-        id: userId,
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        initials: `${firstName[0]}${lastName[0]}`.toUpperCase(),
-        createdAt: new Date().toISOString()
-      };
-
-      // Save to database
-      const stmt = db.prepare(`
-        INSERT INTO users (id, firstName, lastName, email, password, initials, createdAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
-      stmt.run([user.id, user.firstName, user.lastName, user.email, user.password, user.initials, user.createdAt]);
-      stmt.free();
-      await _idbSave();
-
-      // Set auth token (just user ID for local auth)
-      localStorage.setItem('auth_token', user.id);
-      
-      // Return user without password
-      const { password: _, ...safeUser } = user;
-      return { ok: true, user: safeUser };
+      localStorage.setItem('auth_token', data.token);
+      return { ok: true, user: data.user };
     } catch (error) {
-      console.error('Registration error:', error);
       return { ok: false, error: 'Registration failed.' };
     }
   },
 
   async login({ email, password }) {
     try {
-      await dbReady;
-      if (!db) throw new Error("Database not ready");
-
-      // Find user by email
-      const stmt = db.prepare("SELECT * FROM users WHERE email = ?");
-      const user = stmt.getAsObject([email]);
-      stmt.free();
-
-      if (!user) {
-        return { ok: false, error: 'Invalid email or password.' };
+      const response = await fetch(`${this.getApiBase()}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { ok: false, error: data.error };
       }
-
-      // Verify password
-      const isValid = await this.verifyPassword(password, user.password);
-      if (!isValid) {
-        return { ok: false, error: 'Invalid email or password.' };
-      }
-
-      // Set auth token
-      localStorage.setItem('auth_token', user.id);
-
-      // Return user without password
-      const { password: _, ...safeUser } = user;
-      return { ok: true, user: safeUser };
+      localStorage.setItem('auth_token', data.token);
+      return { ok: true, user: data.user };
     } catch (error) {
-      console.error('Login error:', error);
       return { ok: false, error: 'Login failed.' };
     }
-  },
-
-  async hashPassword(password) {
-    // Simple hash for demo purposes - in production use proper hashing like bcrypt
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password + 'salt');
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  },
-
-  async verifyPassword(password, hashedPassword) {
-    const hash = await this.hashPassword(password);
-    return hash === hashedPassword;
   }
 };
 
