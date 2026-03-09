@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-landing="true">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ride</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <link rel="stylesheet" href="styles/landing.css">
+  <script>
+    (function(){var m=localStorage.getItem("ride_reduce_motion")==="true";if(m)document.documentElement.classList.add("reduce-motion");})();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -51,9 +55,9 @@
   <div class="topbar">
     <button class="menu-btn" aria-label="Open menu">
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M3 12H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M3 18H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 6H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 12H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 18H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
     </button>
 
@@ -61,8 +65,11 @@
       <img src="assets/logo.png" alt="Ride logo" class="logo-img">
     </div>
 
-    <!-- Topbar right cluster: lang toggle (guests only) + profile btn -->
+    <!-- Topbar right: lang + profile (NO theme toggle on landing) -->
     <div class="topbar-right" id="topbarRight">
+      <button class="lang-toggle-btn" id="langToggleBtn" aria-label="Toggle language">
+        <span class="lang-flag"></span>
+      </button>
       <div class="profile-btn-wrap">
         <button class="profile-btn" aria-label="Profile" id="profileBtn">
           <span class="circle"></span>
@@ -84,7 +91,7 @@
               Fidelity points
             </a>
             <a href="settings.html" class="dd-item" role="menuitem">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
               Settings
             </a>
             <button class="dd-item dd-signout" id="ddSignOut" role="menuitem">
@@ -520,9 +527,9 @@ Your driver arrives on time, in the right car, on the optimized path. No frictio
   </div><!-- /.site-wrap -->
 
   <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
-
-<script src="scripts/parallax-landing.js" defer></script>
-<script src="assets/sql-wasm.js" defer></script>
-<script src="scripts/auth.js" defer></script>
+  <script src="assets/sql-wasm.js"></script>
+  <script src="scripts/shared.js"></script>
+  <script src="scripts/index.js"></script>
+  <script src="scripts/parallax-landing.js"></script>
 </body>
 </html>

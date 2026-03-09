@@ -333,14 +333,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const HAMBURGER_SVG = `
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M3 6H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M3 12H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M3 18H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 6H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 12H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M3 18H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
       </svg>`;
     const X_SVG = `
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M5 5L19 19" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M19 5L5 19" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M5 5L19 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M19 5L5 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
       </svg>`;
 
     let savedScrollY = 0;

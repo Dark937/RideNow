@@ -6,38 +6,38 @@
   <title>Create account — Ride</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/auth.css">
+  <script>
+    (function(){
+      var t=localStorage.getItem('ride_theme')||'dark';
+      var m=localStorage.getItem('ride_reduce_motion')==='true';
+      document.documentElement.setAttribute('data-theme',t);
+      if(m) document.documentElement.classList.add('reduce-motion');
+    })();
+  </script>
 </head>
 <body>
-
 <div class="auth-page">
 
-  <!-- ══════════════════════════════════════════════════════════════
-       LEFT PANEL — Register form
-       ══════════════════════════════════════════════════════════════ -->
   <div class="auth-left">
-
-    <!-- Back to home -->
     <a href="index.html" class="auth-back" aria-label="Back to home">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Home
     </a>
-
-    <!-- Logo -->
     <a href="index.html" class="auth-logo">
       <img src="assets/logo.png" alt="Ride">
     </a>
+    <button class="auth-theme-btn" aria-label="Toggle theme">
+      <svg class="icon-dark"  viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg class="icon-light" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
 
     <div class="auth-form-wrap">
-
-      <!-- Heading -->
       <div class="auth-heading">
         <h1>Create your account</h1>
         <p>Already have an account? <a href="login.html">Sign in</a></p>
       </div>
 
-      <!-- Social auth -->
       <div class="auth-socials">
         <button class="auth-social-btn" type="button">
           <svg viewBox="0 0 24 24" fill="none">
@@ -56,15 +56,11 @@
         </button>
       </div>
 
-      <!-- Divider -->
       <div class="auth-divider"><span>or</span></div>
 
-      <!-- Registration form -->
       <form id="registerForm" novalidate>
-
         <div class="auth-fields">
 
-          <!-- Name row -->
           <div class="auth-fields-row">
             <div class="auth-field">
               <label for="regFirst">First name</label>
@@ -82,7 +78,6 @@
             </div>
           </div>
 
-          <!-- Email -->
           <div class="auth-field">
             <label for="regEmail">Email address</label>
             <div class="auth-field-row">
@@ -91,7 +86,6 @@
             <span class="auth-field-error" role="alert"></span>
           </div>
 
-          <!-- Password -->
           <div class="auth-field">
             <label for="regPassword">Password</label>
             <div class="auth-field-row">
@@ -101,14 +95,12 @@
               </button>
             </div>
             <span class="auth-field-error" role="alert"></span>
-            <!-- Strength meter -->
             <div class="strength-wrap">
               <div class="strength-bar"><span></span><span></span><span></span><span></span></div>
               <span class="strength-label"></span>
             </div>
           </div>
 
-          <!-- Confirm password -->
           <div class="auth-field">
             <label for="regConfirm">Confirm password</label>
             <div class="auth-field-row">
@@ -122,37 +114,26 @@
 
         </div>
 
-        <!-- Terms -->
         <label class="auth-checkbox">
           <input type="checkbox" id="regTerms" name="terms">
           <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
         </label>
 
-        <!-- Submit -->
         <button type="submit" id="registerSubmit" class="auth-submit">
           <span class="btn-text">Create account</span>
           <span class="spinner" aria-hidden="true"></span>
         </button>
 
-        <!-- Form-level error banner -->
         <div class="auth-error-banner" id="registerError" role="alert">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <p></p>
         </div>
-
       </form>
-
     </div>
-  </div><!-- /auth-left -->
+  </div>
 
-
-  <!-- ══════════════════════════════════════════════════════════════
-       RIGHT PANEL — Animated app showcase
-       ══════════════════════════════════════════════════════════════ -->
   <div class="auth-right" aria-hidden="true">
-
     <div class="auth-glow"></div>
-
     <div class="auth-grid">
       <div class="ac ac-solid blue"><h3>Move faster. Ride smarter.</h3><p>AI-powered routing that thinks ahead</p></div>
       <div class="ac ac-stat"><span class="lbl">Avg ride rating</span><span class="val">4.97</span><span class="sub">across 2.4M trips</span><span class="badge">↑ 0.12 this month</span></div>
@@ -172,7 +153,6 @@
       <div class="ac ac-stat"><span class="lbl">Customer score</span><span class="val">98%</span><span class="sub">satisfaction rate</span><span class="badge">Top tier</span></div>
       <div class="ac ac-solid red"><h3>AI. Speed. Style.</h3><p>The future of urban mobility</p></div>
       <div class="ac ac-map"><div class="pin" style="top:55%;left:45%"></div><span class="pin-lbl">3 drivers nearby</span></div>
-      <!-- duplicate set for seamless loop -->
       <div class="ac ac-solid blue"><h3>Move faster. Ride smarter.</h3><p>AI-powered routing that thinks ahead</p></div>
       <div class="ac ac-stat"><span class="lbl">Avg ride rating</span><span class="val">4.97</span><span class="sub">across 2.4M trips</span><span class="badge">↑ 0.12 this month</span></div>
       <div class="ac ac-map"><div class="pin"></div><span class="pin-lbl">Live tracking</span></div>
@@ -192,18 +172,16 @@
       <div class="ac ac-solid red"><h3>AI. Speed. Style.</h3><p>The future of urban mobility</p></div>
       <div class="ac ac-map"><div class="pin" style="top:55%;left:45%"></div><span class="pin-lbl">3 drivers nearby</span></div>
     </div>
-
     <div class="auth-right-tag">
       <h2>Start riding smarter.</h2>
       <p>Join thousands already on the road.</p>
     </div>
+  </div>
 
-  </div><!-- /auth-right -->
-
-</div><!-- /auth-page -->
+</div>
 
 <script src="assets/sql-wasm.js"></script>
-<script src="scripts/i18n.js"></script>
+<script src="scripts/shared.js"></script>
 <script src="scripts/auth.js"></script>
 </body>
 </html>
