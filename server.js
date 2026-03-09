@@ -175,6 +175,13 @@ app.get('/tos', (req, res) => {
   res.sendFile(__dirname + '/tos.html');
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// For Vercel serverless deployment
+if (process.env.NODE_ENV === 'production') {
+  // Export for Vercel
+  module.exports = app;
+} else {
+  // Local development
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
