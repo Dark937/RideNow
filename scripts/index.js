@@ -5,15 +5,7 @@
 "use strict";
 
 /* ── LANG FLAGS MAP ────────────────────────────────────────────────── */
-const LANG_FLAGS = { en:"🇬🇧", it:"🇮🇹", fr:"🇫🇷", es:"🇪🇸", zh:"🇨🇳" };
 const LANG_ORDER = ["en","it","fr","es","zh"];
-
-function refreshLangBtn(btn) {
-  if (!btn) return;
-  const lang = Lang.get();
-  const flag = btn.querySelector(".lang-flag");
-  if (flag) flag.textContent = LANG_FLAGS[lang] || "🌐";
-}
 
 /* ── TOPBAR DROPDOWN + GUEST CONTROLS ─────────────────────────────── */
 async function initTopbarDropdown() {
@@ -28,13 +20,11 @@ async function initTopbarDropdown() {
 
   // ── Wire lang toggle (same for guest & logged-in) ──
   if (langBtn) {
-    refreshLangBtn(langBtn);
     langBtn.addEventListener("click", () => {
       const next = LANG_ORDER[(LANG_ORDER.indexOf(Lang.get()) + 1) % LANG_ORDER.length];
       Lang.set(next);
       Lang.apply();
-      refreshLangBtn(langBtn);
-      applyLandingTranslations();
+        applyLandingTranslations();
     });
   }
 
@@ -46,7 +36,10 @@ async function initTopbarDropdown() {
     const circle = profileBtn.querySelector(".circle");
     if (circle) {
       circle.classList.add("is-logged-in");
-      if (user.photo) circle.innerHTML = `<img src="${user.photo}" alt="Avatar">`;
+      if (user.photo) {
+        circle.classList.add("has-photo");
+        circle.innerHTML = `<img src="${user.photo}" alt="Avatar">`;
+      }
       else            circle.textContent = user.initials || "R";
     }
     const ddName  = dropdown.querySelector(".dd-name");
@@ -162,9 +155,6 @@ function applyLandingTranslations() {
   // ── Nav social links (footer) ──
   const ftSocials = document.querySelector(".footer-bottom");
   // leave as-is, platform names don't translate
-
-  // ── Re-sync flag + label ──
-  refreshLangBtn(document.getElementById("langToggleBtn"));
 
   // ── data-i18n attributes (shared.js handles these) ──
   Lang.apply();

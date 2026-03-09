@@ -605,3 +605,20 @@
 [data-theme="light"] .auth-social-btn:hover { background: var(--surface-2); }
 [data-theme="light"] .auth-back           { color: var(--muted); }
 [data-theme="light"] .auth-back:hover     { color: var(--text); }
+/* ── LIGHT MODE — remaining fixes ───────────────────────────────── */
+/* Auth right panel card base (was hardcoded #111) */
+[data-theme="light"] .ac {
+  background: #c8ccdc;
+  border-color: rgba(0,0,30,.06);
+}
+/* auth-glow tint for light */
+[data-theme="light"] .auth-glow {
+  background:
+    radial-gradient(ellipse 65% 50% at 62% 38%, rgba(38,81,240,.08), transparent 65%),
+    radial-gradient(ellipse 50% 55% at 30% 72%, rgba(208,32,64,.06), transparent 58%);
+}
+/* Error banner in light mode */
+[data-theme="light"] .auth-error-banner {
+  background: rgba(208,32,64,.08);
+  border-color: rgba(208,32,64,.18);
+}
