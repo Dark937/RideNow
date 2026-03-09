@@ -147,9 +147,13 @@ const Session = {
 
 /* ── MOCK AUTH ────────────────────────────────────────────────────── */
 const Auth = {
+  getApiBase() {
+    return `${window.location.protocol}//${window.location.hostname}:3000`;
+  },
+
   async register({ firstName, lastName, email, password }) {
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await fetch(`${this.getApiBase()}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, password })
@@ -167,7 +171,7 @@ const Auth = {
 
   async login({ email, password }) {
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch(`${this.getApiBase()}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

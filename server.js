@@ -18,6 +18,7 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 app.use(express.json());
+app.use(express.static('.'));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ride', { // Change to your MongoDB URI
@@ -154,6 +155,27 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// Serve HTML pages
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/login.html');
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(__dirname + '/register.html');
+});
+
+app.get('/settings', (req, res) => {
+  res.sendFile(__dirname + '/settings.html');
+});
+
+app.get('/privacy', (req, res) => {
+  res.sendFile(__dirname + '/privacy.html');
+});
+
+app.get('/tos', (req, res) => {
+  res.sendFile(__dirname + '/tos.html');
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
